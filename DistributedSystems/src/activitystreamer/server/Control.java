@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import messages.server.MessageProcessing;
+
+
 import activitystreamer.util.Settings;
 
 public class Control extends Thread {
@@ -53,6 +56,13 @@ public class Control extends Thread {
 	 * Return true if the connection should close.
 	 */
 	public synchronized boolean process(Connection con,String msg){
+		log.info("I received a msg from the client: " + msg);
+		
+		MessageProcessing process = new MessageProcessing();
+		
+		//// Process the messages according to its command
+		process.ProcessMsg(msg);
+		
 		return true;
 	}
 	
@@ -67,7 +77,7 @@ public class Control extends Thread {
 	 * A new incoming connection has been established, and a reference is returned to it
 	 */
 	public synchronized Connection incomingConnection(Socket s) throws IOException{
-		log.debug("incomming connection: "+Settings.socketAddress(s));
+		log.info("incomming connection: "+Settings.socketAddress(s));
 		Connection c = new Connection(s);
 		connections.add(c);
 		return c;

@@ -1,5 +1,9 @@
 package activitystreamer;
 
+import java.io.IOException;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -69,9 +73,6 @@ public class Client {
 		
 		
 		log.info("starting client");
-		
-		
-		
 		
 			
 		ClientSkeleton c = ClientSkeleton.getInstance(); 
