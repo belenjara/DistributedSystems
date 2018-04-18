@@ -5,6 +5,10 @@ import java.awt.Color;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -86,17 +90,32 @@ public class TextFrame extends JFrame implements ActionListener {
 		outputText.repaint();
 	}
 	
+	@SuppressWarnings("static-access")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==sendButton){
 			String msg = inputText.getText().trim().replaceAll("\r","").replaceAll("\n","").replaceAll("\t", "");
+			ClientSkeleton client  = ClientSkeleton.getInstance();
+			
 			JSONObject obj;
 			try {
-				obj = (JSONObject) parser.parse(msg);
-				ClientSkeleton.getInstance().sendActivityObject(obj);
+				obj = (JSONObject) parser.parse(msg);		
+				client.sendActivityObject(obj);
+				
+				if (client.socket != null) {
+					BufferedReader in = new BufferedReader(new InputStreamReader(client.socket.getInputStream(), "UTF-8"));
+					JSONObject output = (JSONObject)parser.parse(in.readLine());
+					this.setOutputText(output);		
+				}
 			} catch (ParseException e1) {
 				log.error("invalid JSON object entered into input text field, data not sent");
-			}
+			} catch (UnsupportedEncodingException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			} catch (IOException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}		
 			
 		} else if(e.getSource()==disconnectButton){
 			ClientSkeleton.getInstance().disconnect();

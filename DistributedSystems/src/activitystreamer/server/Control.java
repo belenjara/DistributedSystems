@@ -58,11 +58,11 @@ public class Control extends Thread {
 	public synchronized boolean process(Connection con,String msg){
 		log.info("I received a msg from the client: " + msg);
 		
-		MessageProcessing process = new MessageProcessing();
+		String responseMessage = new MessageProcessing().processMsg(con, msg);
 		
-		//// Process the messages according to its command
-		process.ProcessMsg(msg);
-		
+		//// Write the response in the socket
+		con.writeMsg(responseMessage);
+			
 		return true;
 	}
 	

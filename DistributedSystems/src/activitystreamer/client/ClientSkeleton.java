@@ -24,7 +24,7 @@ public class ClientSkeleton extends Thread {
 	private static final Logger log = LogManager.getLogger();
 	private static ClientSkeleton clientSolution;
 	private TextFrame textFrame;
-	private static Socket socket;
+	public static Socket socket;
 
 	
 	public static ClientSkeleton getInstance(){
@@ -32,8 +32,8 @@ public class ClientSkeleton extends Thread {
 			clientSolution = new ClientSkeleton();
 			socket = null;
 			try {
-				System.out.println("Client: going to conncet to server");
-				socket = new Socket("localhost", 3780);
+				System.out.println("Client: going to connect to server");
+				socket = new Socket("sunrise.cis.unimelb.edu.au", 3780);
 				System.out.println("Connection established");
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
@@ -53,11 +53,7 @@ public class ClientSkeleton extends Thread {
 		start();
 	}
 	
-	
-	
-	
-	
-	
+
 	@SuppressWarnings("unchecked")
 	public void sendActivityObject(JSONObject activityObj){
 		
@@ -66,7 +62,7 @@ public class ClientSkeleton extends Thread {
 			log.info("Msg: " + msg);
 			
 			try {
-				BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
+				//BufferedReader in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 				
 				out.write(msg + "\n");
@@ -74,10 +70,10 @@ public class ClientSkeleton extends Thread {
 				System.out.println("Message sent");
 				
 				// Receive the reply from the server by reading from the socket input stream
-				String received = in.readLine(); // This method blocks until there
+				/*String received = in.readLine(); // This method blocks until there
 													// is something to read from the
 													// input stream
-				System.out.println("Message received: " + received);
+				System.out.println("Message received: " + received);*/
 				
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block

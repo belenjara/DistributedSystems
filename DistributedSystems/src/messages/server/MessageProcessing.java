@@ -1,32 +1,50 @@
 package messages.server;
 
-import org.json.simple.JSONObject;
-import org.json.simple.parser.JSONParser;
-import org.json.simple.parser.ParseException;
+import activitystreamer.server.Connection;
 
 public class MessageProcessing {
-
-	public void ProcessMsg(String msg) {
-		JSONParser parser = new JSONParser();
-		JSONObject jsonMsg = null;
-		try {
-			jsonMsg = (JSONObject) parser.parse(msg);
-		} catch (ParseException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-			// INVALID MSG
-		}
+	
+	public String processMsg(Connection conn, String msg) {
+		Message message = new Message(msg);
 		
-		String command = (String)jsonMsg.get("command");
+		String command = message.getCommand();
 		
-		switch(command) {
-		case "LOGIN":
-			//DO something
-
+		String responseMessage = "NULL";
+		
+		switch(command) {					
+		case Message.REGISTER:
 			break;
-			// add more commands
 		
+		case Message.LOCK_REQUEST:
+			break;
+			
+		case Message.LOGIN:
+			// This is just a test!! 
+		//	String redirectMsg = new Redirection().redirect();
+		//	if (redirectMsg != null) { responseMessage = redirectMsg; break; }
+			
+			//DO something
+            break;
+			
+		case Message.LOGOUT:
+			break;
+			
+		case Message.AUTHENTICATE:
+			break;
+			
+		case Message.ACTIVITY_MESSAGE:
+			break;
+			
+		case Message.SERVER_ANNOUNCE:
+			break;
+			
+		case Message.ACTIVITY_BROADCAST:
+			break;
+			
+		default:
+			return new Message().getInvalidFormatMessage();
 		}
 		
+		return responseMessage;	
 	}
 }
