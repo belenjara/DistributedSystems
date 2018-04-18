@@ -12,7 +12,9 @@ public class Message {
 	private String username;
 	private String secret;
 	private String hostname;
+	private String id;
 	private int port;
+	private Integer load;
 	private HashMap<String, Object> activity;
 	
 	private static final String COMMAND = "command";
@@ -21,10 +23,16 @@ public class Message {
 	private static final String SECRET = "secret";
 	private static final String HOSTNAME = "hostname";
 	private static final String PORT = "port";
-	private static final String ACTIVITY = "activity";
-	
+	private static final String ACTIVITY = "activity";	
+	private static final String ID_SERVER = "id";
+	private static final String LOAD = "load";
+
 	public static final String INVALID_MESSAGE = "INVALID_MESSAGE";
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";
+	public static final String ERROR_COMMAND_INFO = "Unknown command received";
+	public static final String ERROR_AUTH_INFO = "Server not authenticated";
+	
+	public static final String ERROR_PROPERTIES_INFO = "the received message did not contain %s";
 	
 	public static final String REGISTER = "REGISTER";
 	public static final String REGISTER_SUCCESS = "REGISTER_SUCCESS";
@@ -62,9 +70,9 @@ public class Message {
 		this.prepareMessage(msg);
 	}	
 	
-	public String getInvalidFormatMessage() {
+	public String getInvalidMessage() {
 		this.command = INVALID_MESSAGE;
-		this.info = ERROR_JSON_INFO;
+		this.info = ERROR_COMMAND_INFO;
 		
 		return this.toString();
 	}
@@ -106,6 +114,14 @@ public class Message {
 		
 		if (this.command != null && !this.command.equals("")) {
 			jsonMsg.put(COMMAND, this.command);
+		}
+		
+		if (this.id != null && !this.id.equals("")) {
+			jsonMsg.put(ID_SERVER, this.id);
+		}
+		
+		if (this.load != null) {
+			jsonMsg.put(LOAD, this.load);
 		}
 		
 		////TODO: see if we can return null in some cases...
@@ -183,9 +199,13 @@ public class Message {
 			return;
 		}
 				
-		if (jsonMsg.containsKey(COMMAND)) {
+		    if (jsonMsg.containsKey(COMMAND)) {
 			  this.command = jsonMsg.get(COMMAND).toString();
 			}
+		    
+		    if (jsonMsg.containsKey(ID_SERVER)) {
+		    	this.id = jsonMsg.get(ID_SERVER).toString();
+		    }
 			
 			if (jsonMsg.containsKey(INFO)) {
 				this.info = jsonMsg.get(INFO).toString();
@@ -205,6 +225,10 @@ public class Message {
 			
 			if (jsonMsg.containsKey(PORT)) {
 				this.port =(int)jsonMsg.get(PORT);
+			}
+			
+			if (jsonMsg.containsKey(LOAD)) {
+				this.load =(Integer)jsonMsg.get(LOAD);
 			}
 			
 			if (jsonMsg.containsKey(ACTIVITY)) {
@@ -227,4 +251,20 @@ public class Message {
 				}
 			}	
 		}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+	
+	public Integer getLoad() {
+		return load;
+	}
+
+	public void setLoad(Integer load) {
+		this.load = load;
+	}
 }

@@ -25,6 +25,11 @@ public class Connection extends Thread {
 	private Socket socket;
 	private boolean term=false;
 	
+	private String type;
+	private Boolean Auth;
+	public static final String TYPE_SERVER = "SERVER";
+	public static final String TYPE_CLIENT = "CLIENT";
+		
 	Connection(Socket socket) throws IOException{
 		in = new DataInputStream(socket.getInputStream());
 	    out = new DataOutputStream(socket.getOutputStream());
@@ -84,5 +89,21 @@ public class Connection extends Thread {
 	
 	public boolean isOpen() {
 		return open;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public Boolean getAuth() {
+		return Auth;
+	}
+
+	public void setAuth(Boolean auth) {
+		Auth = auth;
 	}
 }

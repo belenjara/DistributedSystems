@@ -8,13 +8,22 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import messages.server.MessageProcessing;
-
-
+import messages.server.ServerAnnounce;
+import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
+import connections.server.AnnouncedServer;
+import connections.server.RegisteredClient;
 
 public class Control extends Thread {
 	private static final Logger log = LogManager.getLogger();
 	private static ArrayList<Connection> connections;
+	
+	private static ArrayList<AnnouncedServer> announcedServers;
+	
+	private static ArrayList<RegisteredClient> registeredClients;
+	
+	//// TODO: add logged clients list...
+	
 	private static boolean term=false;
 	private static Listener listener;
 	
@@ -29,21 +38,35 @@ public class Control extends Thread {
 	
 	public Control() {
 		// initialize the connections array
-		connections = new ArrayList<Connection>();
+		connections = new ArrayList<Connection>();		
 		// start a listener
 		try {
 			listener = new Listener();
 		} catch (IOException e1) {
 			log.fatal("failed to startup a listening thread: "+e1);
 			System.exit(-1);
-		}	
+		}
+		
+		registeredClients = new ArrayList<RegisteredClient>();
+		
+		//?
+		announcedServers = new ArrayList<AnnouncedServer>();
+		initiateConnection();
 	}
 	
 	public void initiateConnection(){
 		// make a connection to another server if remote hostname is supplied
 		if(Settings.getRemoteHostname()!=null){
 			try {
-				outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
+				Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
+								
+				//TODO: authentication
+				Boolean authOk = true;
+				
+				if (authOk) {						 
+					conn.setType(Connection.TYPE_SERVER);
+					conn.setAuth(true);
+				}
 			} catch (IOException e) {
 				log.error("failed to make connection to "+Settings.getRemoteHostname()+":"+Settings.getRemotePort()+" :"+e);
 				System.exit(-1);
@@ -58,12 +81,14 @@ public class Control extends Thread {
 	public synchronized boolean process(Connection con,String msg){
 		log.info("I received a msg from the client: " + msg);
 		
-		String responseMessage = new MessageProcessing().processMsg(con, msg);
+		Response response = new MessageProcessing().processMsg(con, msg);
 		
-		//// Write the response in the socket
-		con.writeMsg(responseMessage);
+		if (response.getMessage() != null && !response.getMessage().equals("")) {
+			//// Write the response to the client (or server).
+			con.writeMsg(response.getMessage());
+		}
 			
-		return true;
+		return response.getCloseConnection();
 	}
 	
 	/*
@@ -121,7 +146,7 @@ public class Control extends Thread {
 	}
 	
 	public boolean doActivity(){
-		return false;
+		return new ServerAnnounce().sendServerAnnounce();
 	}
 	
 	public final void setTerm(boolean t){
@@ -130,5 +155,21 @@ public class Control extends Thread {
 	
 	public final ArrayList<Connection> getConnections() {
 		return connections;
+	}
+
+	public static ArrayList<AnnouncedServer> getAnnouncedServers() {
+		return announcedServers;
+	}
+
+	public static void addAnnouncedServers(AnnouncedServer announcedServer) {
+		Control.announcedServers.add(announcedServer);
+	}
+
+	public static ArrayList<RegisteredClient> getRegisteredClients() {
+		return registeredClients;
+	}
+
+	public static void addRegisteredClients(RegisteredClient registeredClient) {
+		Control.registeredClients.add(registeredClient);
 	}
 }
