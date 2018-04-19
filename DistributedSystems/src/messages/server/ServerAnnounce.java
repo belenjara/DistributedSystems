@@ -4,7 +4,6 @@ import activitystreamer.server.Connection;
 import activitystreamer.server.Control;
 import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
-import connections.server.ConnectionManager;
 import connections.server.AnnouncedServer;
 
 public class ServerAnnounce {
@@ -21,9 +20,9 @@ public class ServerAnnounce {
 			msg.setHostname(Settings.getLocalHostname());
 			msg.setPort(Settings.getLocalPort());
 			
-			ConnectionManager connMan = ConnectionManager.getInstance();
+			Control connMan = Control.getInstance();
 			
-			int load = connMan.getNumberClients();		
+			int load = connMan.getNumberClientsConnected();		
 			msg.setLoad(load);
 			
 			connMan.broadcastServers(msg.toString(), null);	
@@ -37,7 +36,7 @@ public class ServerAnnounce {
 	
 	public Response receiveServerAnnounce(Message message, Connection conn) {	
 		Response response = new Response();
-		ConnectionManager connMan = ConnectionManager.getInstance();
+		Control connMan = Control.getInstance();
 		Boolean isAuth = connMan.serverIsAuthenticated(conn);
 		
 		if (!isAuth) {
@@ -60,12 +59,9 @@ public class ServerAnnounce {
 		}
 
 		AnnouncedServer aserver = new AnnouncedServer(message);
-		Control.getInstance().addAnnouncedServers(aserver);
+		Control.addAnnouncedServers(aserver);
 			
 		connMan.broadcastServers(message.toString(), conn);	
-		
-		
-		// delete conn, authentication with aaron server , then test, register
 		
 		return response;
 	}

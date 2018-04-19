@@ -1,14 +1,19 @@
 package messages.server;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import activitystreamer.server.Connection;
 import activitystreamer.util.Response;
 
 public class MessageProcessing {
 	
-	public Response  processMsg(Connection conn, String msg) {
+	public List<Response> processMsg(Connection conn, String msg) {
 		Message message = new Message(msg);
 		
 		String command = message.getCommand();
+		
+		List<Response> responses = new ArrayList<Response>();
 				
 		Response response = new Response();
 		response.setMessage(null);
@@ -25,17 +30,20 @@ public class MessageProcessing {
 			
 		case Message.LOGIN:
 			conn.setType(Connection.TYPE_CLIENT);
-			// This is just a test!! 
-		//	String redirectMsg = new Redirection().redirect();
-		//	if (redirectMsg != null) { responseMessage = redirectMsg; break; }
-			
-			//DO something
-            break;
+			// TODO: login
+			//// First login, if success, then check for redirect:
+			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
+			////any other server with a load at least 2 clients less than its own.
+
+			// if login ok, then:
+			Response responseRedirect = new Redirection().redirect();
+	        if (response != null) { responses.add(responseRedirect); }
+			break;
 			
 		case Message.LOGOUT:
 			conn.setType(Connection.TYPE_CLIENT);
-
 			response.setCloseConnection(true);
+			responses.add(response);
 			break;
 			
 		case Message.AUTHENTICATE:
@@ -52,6 +60,7 @@ public class MessageProcessing {
 			// here this server is receiving a server announce...
 			conn.setType(Connection.TYPE_SERVER);
 			response = new ServerAnnounce().receiveServerAnnounce(message, conn);
+			responses.add(response);
 			break;
 			
 		case Message.ACTIVITY_BROADCAST:
@@ -61,6 +70,7 @@ public class MessageProcessing {
 		case Message.AUTHENTICATION_FAIL:
 			conn.setType(Connection.TYPE_SERVER);
 			response.setCloseConnection(true);
+			responses.add(response);
 			break;
 			
 		case Message.LOCK_ALLOWED:
@@ -74,14 +84,16 @@ public class MessageProcessing {
 		case Message.INVALID_MESSAGE:
 			response.setMessage(message.toString());
 			response.setCloseConnection(true);
+			responses.add(response);
 			break;
 						
 		default:
 			response.setMessage(new Message().getInvalidMessage());
-			response.setCloseConnection(true);
+			response.setCloseConnection(true);	
+			responses.add(response);
 			break;
 		}
 		
-		return response;	
+		return responses;	
 	}
 }
