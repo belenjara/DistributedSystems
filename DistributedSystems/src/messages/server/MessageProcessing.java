@@ -86,7 +86,8 @@ public class MessageProcessing {
 			response.setCloseConnection(true);
 			responses.add(response);
 			break;
-						
+				
+			//error
 		default:
 			response.setMessage(new Message().getInvalidMessage());
 			response.setCloseConnection(true);	

@@ -57,6 +57,8 @@ public class Control extends Thread {
 		
 		//// here or in run method??
 		initiateConnection();
+		
+		start();
 	}
 	
 	/*
@@ -66,20 +68,32 @@ public class Control extends Thread {
 		// make a connection to another server if remote hostname is supplied
 		if(Settings.getRemoteHostname()!=null){
 			try {
-				Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
 				
-				//// Authentication to other server.
-				Authentication auth = new Authentication();
-				auth.doAuthentication(conn);
-				
-				if (conn.isOpen() && connections.contains(conn)) {
-					//int i = connections.indexOf(conn);
-					//// The connection is updated, type server is specified and that is authenticated.
-					conn.setType(Connection.TYPE_SERVER);
-					conn.setAuth(true);
-					//connections.set(i, conn);
+				boolean createNewConn = true;
+				for(Connection c : connections) {
+					if (c.getSocket().getRemoteSocketAddress().toString() == Settings.getRemoteHostname() 
+							&& c.getSocket().getPort() == Settings.getRemotePort()) {
+						createNewConn = false;
+						break;
+					}
 				}
-			} catch (IOException e) {
+				
+				if (createNewConn) {
+					Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
+					//// Authentication to other server.
+					log.info("I'm going t authenticate...");
+					Authentication auth = new Authentication();
+					auth.doAuthentication(conn);
+					
+					if (conn.isOpen() && connections.contains(conn)) {
+						//int i = connections.indexOf(conn);
+						//// The connection is updated, type server is specified and that is authenticated.
+						conn.setType(Connection.TYPE_SERVER);
+						conn.setAuth(true);
+						//connections.set(i, conn);
+					}
+				}
+			} catch (IOException e) {				
 				log.error("failed to make connection to "+Settings.getRemoteHostname()+":"+Settings.getRemotePort()+" :"+e);
 				System.exit(-1);
 			}
@@ -143,7 +157,7 @@ public class Control extends Thread {
 	}
 	
 	@Override
-	public void run(){
+	public void run(){	
 		log.info("using activity interval of "+Settings.getActivityInterval()+" milliseconds");
 		while(!term){
 			// do something with 5 second intervals in between
@@ -189,7 +203,7 @@ public class Control extends Thread {
 	/**
 	 * Return the list of the servers that were announced.
 	 */
-	public static ArrayList<AnnouncedServer> getAnnouncedServers() {
+	public final ArrayList<AnnouncedServer> getAnnouncedServers() {
 		return announcedServers;
 	}
 
@@ -210,7 +224,7 @@ public class Control extends Thread {
 	 * Get the list of clients that are registered.
 	 * @return LIst of registered clients.
 	 */
-	public static ArrayList<RegisteredClient> getRegisteredClients() {
+	public final ArrayList<RegisteredClient> getRegisteredClients() {
 		return registeredClients;
 	}
 
@@ -265,14 +279,14 @@ public class Control extends Thread {
 	 * @param conn
 	 * @return TRUE if is authenticated, otherwise FALSE.
 	 */
-	public Boolean serverIsAuthenticated(Connection conn) {
+	public final Boolean serverIsAuthenticated(Connection conn) {
 		return conn.getAuth();
 	}
 	
 	/**
 	 * @return number of clients connected.
 	 */
-	public int getNumberClientsConnected(){		
+	public final int getNumberClientsConnected(){		
 		List<Connection> connections = Control.getInstance().getConnections();
 		int countClients = 0;
 		

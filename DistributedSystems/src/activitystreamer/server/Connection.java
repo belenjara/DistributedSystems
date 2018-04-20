@@ -70,7 +70,8 @@ public class Connection extends Thread {
 	public void run(){
 		try {
 			String data;
-			while(!term && (data = inreader.readLine())!=null){
+			//inStream.ready()
+			while(!term && inreader.ready() && (data = inreader.readLine())!=null){
 				term=Control.getInstance().process(this,data);	
 			}
 			log.debug("connection closed to "+Settings.socketAddress(socket));
