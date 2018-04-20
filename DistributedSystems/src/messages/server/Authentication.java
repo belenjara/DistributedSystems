@@ -1,11 +1,16 @@
 package messages.server;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import activitystreamer.server.Connection;
 import activitystreamer.server.Control;
 import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
 
 public class Authentication {
+
+	private static final Logger log = LogManager.getLogger();
 
 	//// TODO: receive authentication
 	public Response processAuthentication(Connection conn,Message msg) {
@@ -42,7 +47,10 @@ public class Authentication {
 		Message msg = new Message();
 		msg.setCommand(Message.AUTHENTICATE);
 		msg.setSecret(Settings.getSecret());
-		conn.writeMsg(msg.toString());
+		
+		String msgStr = msg.toString();
+		log.info("Sending authentication msg: " + msgStr);
+		conn.writeMsg(msgStr);
 	}
 	
 }

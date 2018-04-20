@@ -21,10 +21,14 @@ public class MessageProcessing {
 		switch(command) {					
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
-
+			Register register = new Register(message);
+			
+			//send lock request...
+			
 			break;
 		
 		case Message.LOCK_REQUEST:
+			// when this server receives a lock request...
 			conn.setType(Connection.TYPE_SERVER);
 			break;
 			
@@ -91,7 +95,8 @@ public class MessageProcessing {
 			response.setCloseConnection(true);
 			responses.add(response);
 			break;
-						
+				
+			//error
 		default:
 			response.setMessage(new Message().getInvalidMessage());
 			response.setCloseConnection(true);	

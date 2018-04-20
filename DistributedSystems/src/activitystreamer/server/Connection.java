@@ -69,7 +69,10 @@ public class Connection extends Thread {
 	
 	public void run(){
 		try {
+			
+			log.info("dksjdfkf");
 			String data;
+			//inStream.ready()
 			while(!term && (data = inreader.readLine())!=null){
 				term=Control.getInstance().process(this,data);	
 			}

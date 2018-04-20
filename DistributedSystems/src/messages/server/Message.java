@@ -101,7 +101,7 @@ public class Message {
 			jsonMsg.put(HOSTNAME, this.hostname);
 		}
 
-		if (this.secret != null && !this.secret.equals("")) {
+		if (this.secret != null) {
 			jsonMsg.put(SECRET, this.secret);
 		}
 

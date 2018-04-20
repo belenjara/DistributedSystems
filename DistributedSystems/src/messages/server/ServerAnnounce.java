@@ -6,7 +6,12 @@ import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
 import connections.server.AnnouncedServer;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
+
 public class ServerAnnounce {
+	private static final Logger log = LogManager.getLogger();
 	
     public static final String ID = "TAIPY-SERVER-1234";
 
@@ -25,7 +30,9 @@ public class ServerAnnounce {
 			int load = connMan.getNumberClientsConnected();		
 			msg.setLoad(load);
 			
-			connMan.broadcastServers(msg.toString(), null);	
+			String msgStr = msg.toString();
+						
+			connMan.broadcastServers(msgStr, null);	
 		}
 		catch(Exception e) {
 			closeConn =true;

@@ -1,7 +1,9 @@
 package activitystreamer.server;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -57,6 +59,8 @@ public class Control extends Thread {
 		
 		//// here or in run method??
 		initiateConnection();
+		
+		start();
 	}
 	
 	/*
@@ -65,21 +69,23 @@ public class Control extends Thread {
 	public void initiateConnection(){
 		// make a connection to another server if remote hostname is supplied
 		if(Settings.getRemoteHostname()!=null){
-			try {
-				Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
-				
-				//// Authentication to other server.
-				Authentication auth = new Authentication();
-				auth.doAuthentication(conn);
-				
-				if (conn.isOpen() && connections.contains(conn)) {
-					//int i = connections.indexOf(conn);
-					//// The connection is updated, type server is specified and that is authenticated.
-					conn.setType(Connection.TYPE_SERVER);
-					conn.setAuth(true);
-					//connections.set(i, conn);
-				}
-			} catch (IOException e) {
+			try {				
+					Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
+					//// Authentication to other server.
+					log.info("I'm going to authenticate...");
+					Authentication auth = new Authentication();
+					auth.doAuthentication(conn);
+					
+					if (conn.isOpen() && connections.contains(conn)) {
+						//int i = connections.indexOf(conn);
+						//// The connection is updated, type server is specified and that is authenticated.
+						conn.setType(Connection.TYPE_SERVER);
+						conn.setAuth(true);
+						//connections.set(i, conn);
+					}
+			} catch (UnknownHostException e) {
+				log.info("The connection already exist..");
+			}catch (IOException e) {				
 				log.error("failed to make connection to "+Settings.getRemoteHostname()+":"+Settings.getRemotePort()+" :"+e);
 				System.exit(-1);
 			}
@@ -101,11 +107,10 @@ public class Control extends Thread {
 			if (response.getMessage() != null && !response.getMessage().equals("")) {
 				//// Write the response to the client (or server).
 				con.writeMsg(response.getMessage());
-				
+			}		
 				//// If is necessary to close the connection.
-				if (response.getCloseConnection()) {
-					return true;
-				}
+			if (response.getCloseConnection()) {
+				return true;
 			}
 		}
 		
@@ -143,7 +148,7 @@ public class Control extends Thread {
 	}
 	
 	@Override
-	public void run(){
+	public void run(){	
 		log.info("using activity interval of "+Settings.getActivityInterval()+" milliseconds");
 		while(!term){
 			// do something with 5 second intervals in between
@@ -189,7 +194,7 @@ public class Control extends Thread {
 	/**
 	 * Return the list of the servers that were announced.
 	 */
-	public static ArrayList<AnnouncedServer> getAnnouncedServers() {
+	public final ArrayList<AnnouncedServer> getAnnouncedServers() {
 		return announcedServers;
 	}
 
@@ -210,7 +215,7 @@ public class Control extends Thread {
 	 * Get the list of clients that are registered.
 	 * @return LIst of registered clients.
 	 */
-	public static ArrayList<RegisteredClient> getRegisteredClients() {
+	public final ArrayList<RegisteredClient> getRegisteredClients() {
 		return registeredClients;
 	}
 
@@ -234,7 +239,8 @@ public class Control extends Thread {
 			if (sc.getType() == Connection.TYPE_SERVER && sc.getAuth() && sc.isOpen()) {
 				Boolean isSender = (senderConn != null && sc.equals(senderConn));
 				//// We don't want to send to the original sender
-				if (!isSender) {		
+				if (!isSender) {
+					log.info("SendServerAnnounce : " + msg);
 					sc.writeMsg(msg);
 				}	
 			}
@@ -265,14 +271,14 @@ public class Control extends Thread {
 	 * @param conn
 	 * @return TRUE if is authenticated, otherwise FALSE.
 	 */
-	public Boolean serverIsAuthenticated(Connection conn) {
+	public final Boolean serverIsAuthenticated(Connection conn) {
 		return conn.getAuth();
 	}
 	
 	/**
 	 * @return number of clients connected.
 	 */
-	public int getNumberClientsConnected(){		
+	public final int getNumberClientsConnected(){		
 		List<Connection> connections = Control.getInstance().getConnections();
 		int countClients = 0;
 		
