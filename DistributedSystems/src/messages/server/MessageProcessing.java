@@ -48,7 +48,7 @@ public class MessageProcessing {
 			
 		case Message.AUTHENTICATE:
 			conn.setType(Connection.TYPE_SERVER);
-			
+			// the server receive a authentication message. 
 			break;
 			
 		case Message.ACTIVITY_MESSAGE:
