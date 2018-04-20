@@ -21,7 +21,7 @@ public class MessageProcessing {
 		switch(command) {					
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
-
+			Register register = new Register(message);
 			break;
 		
 		case Message.LOCK_REQUEST:
