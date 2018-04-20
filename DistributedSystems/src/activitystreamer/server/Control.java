@@ -70,10 +70,9 @@ public class Control extends Thread {
 		// make a connection to another server if remote hostname is supplied
 		if(Settings.getRemoteHostname()!=null){
 			try {				
-				    Socket socket = new Socket(Settings.getRemoteHostname(),Settings.getRemotePort());
-					Connection conn = outgoingConnection(socket);
+					Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
 					//// Authentication to other server.
-					log.info("I'm going t authenticate...");
+					log.info("I'm going to authenticate...");
 					Authentication auth = new Authentication();
 					auth.doAuthentication(conn);
 					
