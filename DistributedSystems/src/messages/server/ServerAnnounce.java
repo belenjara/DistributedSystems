@@ -31,9 +31,7 @@ public class ServerAnnounce {
 			msg.setLoad(load);
 			
 			String msgStr = msg.toString();
-			
-			log.info("SendServerAnnounce : " + msgStr);
-			
+						
 			connMan.broadcastServers(msgStr, null);	
 		}
 		catch(Exception e) {

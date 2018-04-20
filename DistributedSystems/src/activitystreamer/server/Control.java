@@ -1,7 +1,9 @@
 package activitystreamer.server;
 
 import java.io.IOException;
+import java.net.BindException;
 import java.net.Socket;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -67,19 +69,9 @@ public class Control extends Thread {
 	public void initiateConnection(){
 		// make a connection to another server if remote hostname is supplied
 		if(Settings.getRemoteHostname()!=null){
-			try {
-				
-				boolean createNewConn = true;
-				for(Connection c : connections) {
-					if (c.getSocket().getRemoteSocketAddress().toString() == Settings.getRemoteHostname() 
-							&& c.getSocket().getPort() == Settings.getRemotePort()) {
-						createNewConn = false;
-						break;
-					}
-				}
-				
-				if (createNewConn) {
-					Connection conn = outgoingConnection(new Socket(Settings.getRemoteHostname(),Settings.getRemotePort()));
+			try {				
+				    Socket socket = new Socket(Settings.getRemoteHostname(),Settings.getRemotePort());
+					Connection conn = outgoingConnection(socket);
 					//// Authentication to other server.
 					log.info("I'm going t authenticate...");
 					Authentication auth = new Authentication();
@@ -92,8 +84,9 @@ public class Control extends Thread {
 						conn.setAuth(true);
 						//connections.set(i, conn);
 					}
-				}
-			} catch (IOException e) {				
+			} catch (UnknownHostException e) {
+				log.info("The connection already exist..");
+			}catch (IOException e) {				
 				log.error("failed to make connection to "+Settings.getRemoteHostname()+":"+Settings.getRemotePort()+" :"+e);
 				System.exit(-1);
 			}
@@ -115,11 +108,10 @@ public class Control extends Thread {
 			if (response.getMessage() != null && !response.getMessage().equals("")) {
 				//// Write the response to the client (or server).
 				con.writeMsg(response.getMessage());
-				
+			}		
 				//// If is necessary to close the connection.
-				if (response.getCloseConnection()) {
-					return true;
-				}
+			if (response.getCloseConnection()) {
+				return true;
 			}
 		}
 		
@@ -248,7 +240,8 @@ public class Control extends Thread {
 			if (sc.getType() == Connection.TYPE_SERVER && sc.getAuth() && sc.isOpen()) {
 				Boolean isSender = (senderConn != null && sc.equals(senderConn));
 				//// We don't want to send to the original sender
-				if (!isSender) {		
+				if (!isSender) {
+					log.info("SendServerAnnounce : " + msg);
 					sc.writeMsg(msg);
 				}	
 			}

@@ -22,9 +22,13 @@ public class MessageProcessing {
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
 			Register register = new Register(message);
+			
+			//send lock request...
+			
 			break;
 		
 		case Message.LOCK_REQUEST:
+			// when this server receives a lock request...
 			conn.setType(Connection.TYPE_SERVER);
 			break;
 			
