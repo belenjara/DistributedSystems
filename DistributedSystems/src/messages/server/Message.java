@@ -57,6 +57,7 @@ public class Message {
 
 	public static final String AUTHENTICATE = "AUTHENTICATE";
 	public static final String AUTHENTICATION_FAIL = "AUTHENTICATION_FAIL";
+	public static final String AUTHENTICATION_FAIL_INFO = "the supplied secret is incorrect: %s";
 
 	public static final String LOCK_REQUEST = "LOCK_REQUEST";
 	public static final String LOCK_DENIED = "LOCK_DENIED";

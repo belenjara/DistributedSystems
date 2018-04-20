@@ -35,7 +35,7 @@ public class MessageProcessing {
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
 
-			// if login ok, then:
+			// if login OK, then:
 			Response responseRedirect = new Redirection().redirect();
 	        if (response != null) { responses.add(responseRedirect); }
 			break;
@@ -49,6 +49,11 @@ public class MessageProcessing {
 		case Message.AUTHENTICATE:
 			conn.setType(Connection.TYPE_SERVER);
 			// the server receive a authentication message. 
+			Authentication authen = new Authentication();
+			//authen.processAuthentication();
+			
+			response = authen.processAuthentication(conn,message);
+			responses.add(response);
 			break;
 			
 		case Message.ACTIVITY_MESSAGE:
