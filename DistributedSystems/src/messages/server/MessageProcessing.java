@@ -65,7 +65,8 @@ public class MessageProcessing {
 			
 		case Message.ACTIVITY_MESSAGE:
 			conn.setType(Connection.TYPE_CLIENT);
-
+			response = new ActivityMsg().receiveActivityMsg(message, conn);
+			responses.add(response);
 			break;
 			
 		case Message.SERVER_ANNOUNCE:
@@ -77,6 +78,8 @@ public class MessageProcessing {
 			
 		case Message.ACTIVITY_BROADCAST:
 			conn.setType(Connection.TYPE_SERVER);
+			response = new ActivityBroadcast().receiveServerBroadcast(message, conn);
+			responses.add(response);
 			break;
 			
 		case Message.AUTHENTICATION_FAIL:
