@@ -31,6 +31,8 @@ public class Message {
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";
 	public static final String ERROR_COMMAND_INFO = "Unknown command received";
 	public static final String ERROR_AUTH_INFO = "Server not authenticated";
+	
+	public static final String ERROR_AUTH_INFO2 = "Server already authenticated";
 
 	public static final String ERROR_PROPERTIES_INFO = "the received message did not contain %s";
 
@@ -101,7 +103,7 @@ public class Message {
 			jsonMsg.put(HOSTNAME, this.hostname);
 		}
 
-		if (this.secret != null) {
+		if (this.secret != null && !this.secret.equals("")) {
 			jsonMsg.put(SECRET, this.secret);
 		}
 

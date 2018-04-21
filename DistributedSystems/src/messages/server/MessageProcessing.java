@@ -39,6 +39,9 @@ public class MessageProcessing {
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
 
+			
+			
+			
 			// if login OK, then:
 			Response responseRedirect = new Redirection().redirect();
 	        if (response != null) { responses.add(responseRedirect); }

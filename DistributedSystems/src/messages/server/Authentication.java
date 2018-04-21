@@ -20,20 +20,21 @@ public class Authentication {
 		//check if the server had already successfully authenticated
 		if (isAuth) {
 			msg.setCommand(Message.INVALID_MESSAGE);
-			msg.setInfo(Message.ERROR_AUTH_INFO);
+			msg.setInfo(Message.ERROR_AUTH_INFO2);
 			response.setCloseConnection(true);
 			response.setMessage(msg.toString());
 			return response;
 		}
 		// check the secret
-		if (msg.getSecret() != Settings.getSecret()) {
+		if (!msg.getSecret().equals(Settings.getSecret())) {
 			msg.setCommand(Message.AUTHENTICATION_FAIL);
-			msg.setInfo(Message.AUTHENTICATION_FAIL_INFO + msg.getSecret() );
+			msg.setInfo(String.format(Message.AUTHENTICATION_FAIL_INFO, msg.getSecret() ));
 			response.setCloseConnection(true);
 			response.setMessage(msg.toString());
 			return response;
 		}
 		// do nothing if the authentication succeeded.
+		conn.setAuth(true);
 		response.setMessage(null);
 		response.setCloseConnection(false);
 		return response;

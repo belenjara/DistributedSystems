@@ -1,19 +1,18 @@
 package messages.server;
-import java.io.IOException;
-
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 public class Register {
-public static JSONObject registed_client = new JSONObject();
-public static JSONArray client_list= new JSONArray();
-Message msg;
+
+	public static JSONObject registed_client;
+	public static JSONArray client_list;
+	private Message msg;
 
  
  		
 
 	public Register (Message message) {
 		this.msg = message;
-	
+	 
 		if (check_client(client_list, message.getUsername()) != false) {
 		JSONObject client= new JSONObject();
 
