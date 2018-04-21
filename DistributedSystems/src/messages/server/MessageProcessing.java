@@ -22,10 +22,9 @@ public class MessageProcessing {
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
 			Register register = new Register(message);
-			
-			//send lock request...
-			
+			register.doRegistration(conn, message);
 			break;
+		
 		
 		case Message.LOCK_REQUEST:
 			// when this server receives a lock request...
@@ -39,16 +38,17 @@ public class MessageProcessing {
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
 
-			
-			
+			response = new Login().loginProcess(conn,message);
+			responses.add(response);
 			
 			// if login OK, then:
 			Response responseRedirect = new Redirection().redirect();
-	        if (response != null) { responses.add(responseRedirect); }
+	        if (responseRedirect != null) { responses.add(responseRedirect); } 
 			break;
 			
 		case Message.LOGOUT:
 			conn.setType(Connection.TYPE_CLIENT);
+			
 			response.setCloseConnection(true);
 			responses.add(response);
 			break;
@@ -57,7 +57,7 @@ public class MessageProcessing {
 			conn.setType(Connection.TYPE_SERVER);
 			// the server receive a authentication message. 
 			Authentication authen = new Authentication();
-			//authen.processAuthentication();
+			//authen.processAuthentication();  
 			
 			response = authen.processAuthentication(conn,message);
 			responses.add(response);
