@@ -31,6 +31,8 @@ public class Message {
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";
 	public static final String ERROR_COMMAND_INFO = "Unknown command received";
 	public static final String ERROR_AUTH_INFO = "Server not authenticated";
+	
+	public static final String ERROR_AUTH_INFO2 = "Server already authenticated";
 
 	public static final String ERROR_PROPERTIES_INFO = "the received message did not contain %s";
 
@@ -57,6 +59,7 @@ public class Message {
 
 	public static final String AUTHENTICATE = "AUTHENTICATE";
 	public static final String AUTHENTICATION_FAIL = "AUTHENTICATION_FAIL";
+	public static final String AUTHENTICATION_FAIL_INFO = "the supplied secret is incorrect: %s";
 
 	public static final String LOCK_REQUEST = "LOCK_REQUEST";
 	public static final String LOCK_DENIED = "LOCK_DENIED";
@@ -100,7 +103,7 @@ public class Message {
 			jsonMsg.put(HOSTNAME, this.hostname);
 		}
 
-		if (this.secret != null) {
+		if (this.secret != null && !this.secret.equals("")) {
 			jsonMsg.put(SECRET, this.secret);
 		}
 

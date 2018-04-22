@@ -33,7 +33,7 @@ public class ClientSkeleton extends Thread {
 			socket = null;
 			try {
 				System.out.println("Client: going to connect to server");
-				socket = new Socket("sunrise.cis.unimelb.edu.au", 3780);
+				socket = new Socket("localhost", 3780);
 				System.out.println("Connection established");
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
