@@ -26,6 +26,7 @@ public class MessageProcessing {
 			 responses.add(response);
 			break;
 		
+		
 		case Message.LOCK_REQUEST:
 			conn.setType(Connection.TYPE_SERVER);
 			//receiveLockRequest

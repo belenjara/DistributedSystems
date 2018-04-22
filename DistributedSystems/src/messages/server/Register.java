@@ -17,27 +17,7 @@ Message msg;
  		
 
 	public Register (Message message) {
-		this.msg = message;
-	
-		/*if (check_client(client_list, message.getUsername()) != false) {
-		JSONObject client= new JSONObject();
-
-		client.put("Name", msg.getUsername());
-		client.put("Secret", msg.getSecret());
-		client_list.add(client);
-		registed_client.put("Registed Client",client_list);
-		System.out.println(registed_client);
-		
-		JSONObject prompt_com = new JSONObject();
-		JSONObject prompt_info = new JSONObject();
-		prompt_com.put("command", "REGISTER_SUCCESS");
-		prompt_info.put("info", "register success for "+msg.getUsername());
-		prompt_reg.add(prompt_com);
-		prompt_reg.add(prompt_info);
-		
-		Lock lock = new Lock(msg.getUsername(),msg.getSecret());
-		System.out.println(prompt_reg);*/
-		
+		this.msg = message;		
 		}
 
 		public Response doRegistration(Connection conn,Message message) {

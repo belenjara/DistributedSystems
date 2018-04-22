@@ -26,7 +26,7 @@ public class Connection extends Thread {
 	private boolean term=false;
 	
 	private String type;
-	private Boolean Auth;
+	private boolean Auth;
 	public static final String TYPE_SERVER = "SERVER";
 	public static final String TYPE_CLIENT = "CLIENT";
 		
@@ -37,6 +37,7 @@ public class Connection extends Thread {
 	    outwriter = new PrintWriter(out, true);
 	    this.socket = socket;
 	    open = true;
+	    Auth = false;
 	    start();
 	}
 	
@@ -102,7 +103,7 @@ public class Connection extends Thread {
 		this.type = type;
 	}
 
-	public Boolean getAuth() {
+	public boolean getAuth() {
 		return Auth;
 	}
 
