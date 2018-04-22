@@ -27,7 +27,7 @@ public class Login {
 		Message msgCheck = new Message();
 		msgCheck = msgCheck.CheckMessage(msg, Message.COMMAND);
 		
-		if (msgCheck != null) {
+		if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setMessage(msgCheck.toString());
 			response.setCloseConnection(true);
 			return response;
@@ -36,7 +36,7 @@ public class Login {
 		msgCheck = new Message();
 		msgCheck = msgCheck.CheckMessage(msg, Message.USERNAME);
 		
-		if (msgCheck != null) {
+		if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setMessage(msgCheck.toString());
 			response.setCloseConnection(true);
 			return response;
@@ -45,7 +45,7 @@ public class Login {
 		if (!username.equals(anonymous)) {
 			msgCheck = new Message();
 			msgCheck = msgCheck.CheckMessage(msg, Message.SECRET);
-			if (msgCheck != null) {
+			if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 				response.setMessage(msgCheck.toString());
 				response.setCloseConnection(true);
 				return response;

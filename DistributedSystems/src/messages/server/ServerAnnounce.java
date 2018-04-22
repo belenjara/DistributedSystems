@@ -74,28 +74,28 @@ public class ServerAnnounce {
 		response.setCloseConnection(false);
 		
 		Message responseMsg = Message.CheckMessage(msg, Message.ID_SERVER);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
 		
 		responseMsg = Message.CheckMessage(msg, Message.PORT);
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
 		
 		responseMsg = Message.CheckMessage(msg, Message.LOAD);
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}	
 		
 		responseMsg = Message.CheckMessage(msg, Message.HOSTNAME);
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;

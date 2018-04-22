@@ -45,7 +45,7 @@ public class MessageProcessing {
 			
 			// if login OK, then we verify if is necessary to redirect:
 			Response responseRedirect = new Redirection().redirect();
-	        if (response != null) { responses.add(responseRedirect); }
+	        if (responseRedirect != null) { responses.add(responseRedirect); }
 			break; 
 
 		case Message.LOGOUT:

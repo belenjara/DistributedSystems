@@ -30,6 +30,14 @@ public class Authentication {
 			response.setMessage(msg.toString());
 			return response;
 		}
+		
+		msg = Message.CheckMessage(msg, Message.SECRET);
+		if (msg.getCommand().equals(Message.INVALID_MESSAGE)) {
+			response.setCloseConnection(true);
+			response.setMessage(msg.toString());
+			return response;
+		}	
+		
 		// check the secret
 		if (!msg.getSecret().equals(Settings.getSecret())) {
 			msg.setCommand(Message.AUTHENTICATION_FAIL);

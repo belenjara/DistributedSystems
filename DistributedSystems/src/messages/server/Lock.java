@@ -51,14 +51,14 @@ Control conm = Control.getInstance();
 		response.setCloseConnection(false);
 		
 		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
 		
 		responseMsg = Message.CheckMessage(message, Message.SECRET);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
@@ -94,14 +94,14 @@ Control conm = Control.getInstance();
 		LockRequestInfo logreq = null;
 		
 		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
 		
 		responseMsg = Message.CheckMessage(message, Message.SECRET);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
@@ -134,14 +134,14 @@ Control conm = Control.getInstance();
 		response.setCloseConnection(false);
 		
 		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
 		
 		responseMsg = Message.CheckMessage(message, Message.SECRET);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;

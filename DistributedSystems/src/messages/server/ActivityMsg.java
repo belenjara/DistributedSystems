@@ -54,14 +54,14 @@ public class ActivityMsg {
 			response.setCloseConnection(false);
 			
 			Message responseMsg = Message.CheckMessage(msg, Message.USERNAME);	
-			if (responseMsg != null) {
+			if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 				response.setCloseConnection(true);
 				response.setMessage(responseMsg.toString());
 				return response;
 			}
 			
 			responseMsg = Message.CheckMessage(msg, Message.SECRET);
-			if (responseMsg != null) {
+			if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 				response.setCloseConnection(true);
 				response.setMessage(responseMsg.toString());
 				return response;
@@ -69,7 +69,7 @@ public class ActivityMsg {
 			
 			//We also need to validate in this case is there is a mismatch between the username and secret!!
 			responseMsg = Message.CheckMessage(msg, Message.ACTIVITY);
-			if (responseMsg != null) {
+			if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 				response.setCloseConnection(true);
 				response.setMessage(responseMsg.toString());
 				return response;

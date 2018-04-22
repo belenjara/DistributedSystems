@@ -50,7 +50,7 @@ public class ActivityBroadcast {
 		
 		//Any other validation for the Activity Message?
 		Message responseMsg = Message.CheckMessage(msg, Message.ACTIVITY);	
-		if (responseMsg != null) {
+		if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setCloseConnection(true);
 			response.setMessage(responseMsg.toString());
 			return response;

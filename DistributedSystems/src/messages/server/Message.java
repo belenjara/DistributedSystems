@@ -102,7 +102,7 @@ public class Message {
 			return message;
 		}
 		
-		return null;
+		return msg;
 	}
 
 	@SuppressWarnings("unchecked")
