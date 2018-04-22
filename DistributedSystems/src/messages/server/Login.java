@@ -9,7 +9,12 @@ import connections.server.RegisteredClient;
 
 public class Login {
 	
-	
+	/**
+	 * When this server receives a login message from a client.
+	 * @param conn
+	 * @param msg
+	 * @return
+	 */
 	public Response loginProcess(Connection conn, Message msg) {
 		Response response = new Response();
 		String username = msg.getUsername();
@@ -17,6 +22,35 @@ public class Login {
 		String enteredSecret = msg.getSecret();
 		ArrayList<RegisteredClient> registeredClients = Control.getInstance().getRegisteredClients();
 		String storedSecret = findSecret(username,registeredClients);
+		
+		
+		Message msgCheck = new Message();
+		msgCheck = msgCheck.CheckMessage(msg, Message.COMMAND);
+		
+		if (msgCheck != null) {
+			response.setMessage(msgCheck.toString());
+			response.setCloseConnection(true);
+			return response;
+		}
+		
+		msgCheck = new Message();
+		msgCheck = msgCheck.CheckMessage(msg, Message.USERNAME);
+		
+		if (msgCheck != null) {
+			response.setMessage(msgCheck.toString());
+			response.setCloseConnection(true);
+			return response;
+		}
+		
+		if (!username.equals(anonymous)) {
+			msgCheck = new Message();
+			msgCheck = msgCheck.CheckMessage(msg, Message.SECRET);
+			if (msgCheck != null) {
+				response.setMessage(msgCheck.toString());
+				response.setCloseConnection(true);
+				return response;
+			}
+		}
 		
 		/* if it is anonymous, success
 		 * if the secret for an entered username is wrong or username can't be found, send "LOGIN_FAILED" and close the connection

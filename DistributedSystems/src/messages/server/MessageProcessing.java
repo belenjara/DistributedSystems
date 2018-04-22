@@ -10,26 +10,25 @@ public class MessageProcessing {
 	
 	public List<Response> processMsg(Connection conn, String msg) {
 		Message message = new Message(msg);
-		
-		String command = message.getCommand();
-		
-		List<Response> responses = new ArrayList<Response>();
-				
 		Response response = new Response();
+		List<Response> responses = new ArrayList<Response>();				
+
+		// First we verify if the message contains the property "command".
+		message = Message.CheckMessage(message, Message.COMMAND);	
+			
+		String command = message.getCommand();		
 		response.setMessage(null);
 		
 		switch(command) {					
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
-			Register register = new Register(message);
-			 response = register.doRegistration(conn, message);
-			 responses.add(response);
+			response = new Register(message).doRegistration(conn, message);
+			responses.add(response);
 			break;
 		
 		
 		case Message.LOCK_REQUEST:
 			conn.setType(Connection.TYPE_SERVER);
-			//receiveLockRequest
 			Lock lockrequest = new Lock(message.getUsername(), message.getSecret());
 			response = lockrequest.receiveLockRequest(conn, message);
 			responses.add(response);
@@ -37,7 +36,6 @@ public class MessageProcessing {
 			
 		case Message.LOGIN:
 			conn.setType(Connection.TYPE_CLIENT);
-			// TODO: login
 			//// First login, if success, then check for redirect:
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
@@ -45,14 +43,13 @@ public class MessageProcessing {
 			response = new Login().loginProcess(conn,message);
 			responses.add(response);
 			
-			// if login OK, then:
+			// if login OK, then we verify if is necessary to redirect:
 			Response responseRedirect = new Redirection().redirect();
 	        if (response != null) { responses.add(responseRedirect); }
 			break; 
 
 		case Message.LOGOUT:
-			conn.setType(Connection.TYPE_CLIENT);
-			
+			conn.setType(Connection.TYPE_CLIENT);		
 			response.setCloseConnection(true);
 			responses.add(response);
 			break;
@@ -60,9 +57,7 @@ public class MessageProcessing {
 		case Message.AUTHENTICATE:
 			conn.setType(Connection.TYPE_SERVER);
 			// the server receive a authentication message. 
-			Authentication authen = new Authentication();
-			//authen.processAuthentication();  
-			
+			Authentication authen = new Authentication();			
 			response = authen.processAuthentication(conn,message);
 			responses.add(response);
 			break;
@@ -98,9 +93,7 @@ public class MessageProcessing {
 			response = lockAllowed.receiveLock_allowed(message);
 			responses.add(response);
 			break;
-			
-	
-			
+						
 		case Message.LOCK_DENIED:
 			conn.setType(Connection.TYPE_SERVER);
 			Lock lockDenied = new Lock(message.getUsername(), message.getSecret());
@@ -114,7 +107,7 @@ public class MessageProcessing {
 			responses.add(response);
 			break;
 				
-			//error
+			// any unknown command
 		default:
 			response.setMessage(new Message().getInvalidMessage());
 			response.setCloseConnection(true);	

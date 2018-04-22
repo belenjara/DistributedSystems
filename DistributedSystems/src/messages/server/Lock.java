@@ -1,11 +1,5 @@
 package messages.server;
-import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-
-import org.json.simple.JSONArray;
-import org.json.simple.JSONObject;
-
 import activitystreamer.server.Connection;
 import activitystreamer.server.Control;
 import activitystreamer.util.Response;
@@ -56,7 +50,20 @@ Control conm = Control.getInstance();
 		Response response = new Response();
 		response.setCloseConnection(false);
 		
-		// TODO: verify the username and secret.
+		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}
+		
+		responseMsg = Message.CheckMessage(message, Message.SECRET);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}	
+		
 		for(LockRequestInfo log : lockList) {
 			if(log.getUsername().equals(this.username)) {
 				int respNum = log.getServerResponses() + 1;
@@ -85,7 +92,21 @@ Control conm = Control.getInstance();
 		response.setCloseConnection(false);
 		
 		LockRequestInfo logreq = null;
-		// TODO: verify the username and secret.
+		
+		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}
+		
+		responseMsg = Message.CheckMessage(message, Message.SECRET);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}	
+		
 		for(LockRequestInfo log : lockList) {
 			if(log.getUsername().equals(this.username)) {
 				Message messageResp = new Message();
@@ -112,6 +133,20 @@ Control conm = Control.getInstance();
 		Response response = new Response();
 		response.setCloseConnection(false);
 		
+		Message responseMsg = Message.CheckMessage(message, Message.USERNAME);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}
+		
+		responseMsg = Message.CheckMessage(message, Message.SECRET);	
+		if (responseMsg != null) {
+			response.setCloseConnection(true);
+			response.setMessage(responseMsg.toString());
+			return response;
+		}	
+		
 		if (!conn.getAuth()) {
 			// server not authenticated
 			Message messageResp = new Message();
@@ -129,9 +164,7 @@ Control conm = Control.getInstance();
 			return response;
 			// TODO: check message
 		}
-		
-		
-		
+			
 		boolean clientExists = false;
 		for (RegisteredClient c : registeredClients) {
 			if (c.getUsername() == this.username) {

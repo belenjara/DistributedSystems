@@ -1,9 +1,5 @@
 package activitystreamer;
 
-import java.io.IOException;
-import java.net.Socket;
-import java.net.UnknownHostException;
-
 import org.apache.commons.cli.CommandLine;
 import org.apache.commons.cli.CommandLineParser;
 import org.apache.commons.cli.DefaultParser;
@@ -19,6 +15,7 @@ import activitystreamer.util.Settings;
 public class Client {
 	
 	private static final Logger log = LogManager.getLogger();
+	
 	
 	private static void help(Options options){
 		String header = "An ActivityStream Client for Unimelb COMP90015\n\n";

@@ -12,7 +12,12 @@ public class Authentication {
 
 	private static final Logger log = LogManager.getLogger();
 
-	//// TODO: receive authentication
+	/**
+	 * When this server receives an authentication from other server.
+	 * @param conn
+	 * @param msg
+	 * @return
+	 */
 	public Response processAuthentication(Connection conn,Message msg) {
 		Response response = new Response();
 		Control connMan = Control.getInstance();

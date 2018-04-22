@@ -11,7 +11,7 @@ import org.apache.logging.log4j.Logger;
 
 
 public class ServerAnnounce {
-	private static final Logger log = LogManager.getLogger();
+	//private static final Logger log = LogManager.getLogger();
 	
     public static final String ID = "TAIPY-SERVER-1234";
 
@@ -58,12 +58,7 @@ public class ServerAnnounce {
 		
 		Response valid = validateMessage(message);
 		if (valid.getCloseConnection()) {
-			Message msg = new Message();
-			msg.setCommand(Message.INVALID_MESSAGE);
-			msg.setInfo(valid.getMessage());
-			response.setCloseConnection(true);
-			response.setMessage(msg.toString());
-			return response;
+			return valid;
 		}
 
 		AnnouncedServer aserver = new AnnouncedServer(message);
@@ -78,25 +73,33 @@ public class ServerAnnounce {
 		Response response = new Response();
 		response.setCloseConnection(false);
 		
-		if (msg.getId() == null) {
+		Message responseMsg = Message.CheckMessage(msg, Message.ID_SERVER);	
+		if (responseMsg != null) {
 			response.setCloseConnection(true);
-			response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "id"));
+			response.setMessage(responseMsg.toString());
+			return response;
 		}
 		
-		if(msg.getPort() <= 0) {
+		responseMsg = Message.CheckMessage(msg, Message.PORT);
+		if (responseMsg != null) {
 			response.setCloseConnection(true);
-			response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "port"));
+			response.setMessage(responseMsg.toString());
+			return response;
 		}
 		
-		if (msg.getHostname() == null) {
+		responseMsg = Message.CheckMessage(msg, Message.LOAD);
+		if (responseMsg != null) {
 			response.setCloseConnection(true);
-			response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "hostname"));
-		}
+			response.setMessage(responseMsg.toString());
+			return response;
+		}	
 		
-		if (msg.getLoad() == null) {
+		responseMsg = Message.CheckMessage(msg, Message.HOSTNAME);
+		if (responseMsg != null) {
 			response.setCloseConnection(true);
-			response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "load"));
-		}
+			response.setMessage(responseMsg.toString());
+			return response;
+		}	
 		
 		return response;
 	}

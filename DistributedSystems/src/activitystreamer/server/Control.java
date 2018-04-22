@@ -229,7 +229,7 @@ public class Control extends Thread {
 	 * Add a registered client to the list.
 	 * @param registeredClient
 	 */
-	public static void addRegisteredClients(RegisteredClient registeredClient) {
+	public void addRegisteredClients(RegisteredClient registeredClient) {
 		Control.registeredClients.add(registeredClient);
 	}
 	
@@ -314,11 +314,11 @@ public class Control extends Thread {
 		return countServers;	
 	}
 
-	public static ArrayList<LockRequestInfo> getLockInfolist() {
+	public ArrayList<LockRequestInfo> getLockInfolist() {
 		return lockInfolist;
 	}
 
-	public static void setLockInfolist(LockRequestInfo lockInfo) {
+	public void setLockInfolist(LockRequestInfo lockInfo) {
 		lockInfolist.add(lockInfo);
 	}
 }

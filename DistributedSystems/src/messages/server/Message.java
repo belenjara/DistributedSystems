@@ -17,15 +17,15 @@ public class Message {
 	private Integer load;
 	private HashMap<String, Object> activity;
 
-	private static final String COMMAND = "command";
-	private static final String INFO = "info";
-	private static final String USERNAME = "username";
-	private static final String SECRET = "secret";
-	private static final String HOSTNAME = "hostname";
-	private static final String PORT = "port";
-	private static final String ACTIVITY = "activity";	
-	private static final String ID_SERVER = "id";
-	private static final String LOAD = "load";
+	public static final String COMMAND = "command";
+	public static final String INFO = "info";
+	public static final String USERNAME = "username";
+	public static final String SECRET = "secret";
+	public static final String HOSTNAME = "hostname";
+	public static final String PORT = "port";
+	public static final String ACTIVITY = "activity";	
+	public static final String ID_SERVER = "id";
+	public static final String LOAD = "load";
 
 	public static final String INVALID_MESSAGE = "INVALID_MESSAGE";
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";
@@ -78,6 +78,31 @@ public class Message {
 		this.info = ERROR_COMMAND_INFO;
 
 		return this.toString();
+	}
+	
+	public static Message CheckMessage(Message msg, String property) {
+		JSONParser parser = new JSONParser();
+		JSONObject jsonMsg = null;
+		Message message = new Message();
+		try {
+			jsonMsg = (JSONObject) parser.parse(msg.toString());
+		} catch (ParseException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+
+			// INVALID MSG
+			message.setCommand(INVALID_MESSAGE);
+			message.setInfo(ERROR_JSON_INFO);
+			return message;
+		}
+		
+		if (!jsonMsg.containsKey(property) || jsonMsg.get(property) == null || jsonMsg.get(property).equals("")){
+			message.setCommand(INVALID_MESSAGE);
+			message.setInfo(String.format(ERROR_PROPERTIES_INFO, property));
+			return message;
+		}
+		
+		return null;
 	}
 
 	@SuppressWarnings("unchecked")

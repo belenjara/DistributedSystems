@@ -20,7 +20,7 @@ public class ActivityMsg {
 		//"validate logged on client" is only from this server's clients - ADECUAR
 		if (!isAuth) {
 			Message msg = new Message();
-			msg.setCommand(Message.INVALID_MESSAGE);
+			msg.setCommand(Message.AUTHENTICATION_FAIL);
 			msg.setInfo(Message.ERROR_AUTH_INFO);
 			response.setCloseConnection(true);
 			response.setMessage(msg.toString());
@@ -53,25 +53,27 @@ public class ActivityMsg {
 			Response response = new Response();
 			response.setCloseConnection(false);
 			
-			if (msg.getUsername() == null) {
+			Message responseMsg = Message.CheckMessage(msg, Message.USERNAME);	
+			if (responseMsg != null) {
 				response.setCloseConnection(true);
-				response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "username"));
+				response.setMessage(responseMsg.toString());
+				return response;
+			}
+			
+			responseMsg = Message.CheckMessage(msg, Message.SECRET);
+			if (responseMsg != null) {
+				response.setCloseConnection(true);
+				response.setMessage(responseMsg.toString());
 				return response;
 			}
 			
 			//We also need to validate in this case is there is a mismatch between the username and secret!!
-			if(msg.getSecret() == null) {
+			responseMsg = Message.CheckMessage(msg, Message.ACTIVITY);
+			if (responseMsg != null) {
 				response.setCloseConnection(true);
-				response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "secret"));
+				response.setMessage(responseMsg.toString());
 				return response;
-			}
-
-			if (msg.getActivity() == null) {
-				response.setCloseConnection(true);
-				response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "activity"));
-				return response;
-			}
-			
+			}			
 			
 			Control connMan = Control.getInstance();
 			ArrayList<RegisteredClient> registeredClients=connMan.getRegisteredClients();

@@ -49,9 +49,11 @@ public class ActivityBroadcast {
 		response.setCloseConnection(false);
 		
 		//Any other validation for the Activity Message?
-		if (msg.getActivity() == null) {
+		Message responseMsg = Message.CheckMessage(msg, Message.ACTIVITY);	
+		if (responseMsg != null) {
 			response.setCloseConnection(true);
-			response.setMessage(String.format(Message.ERROR_PROPERTIES_INFO, "activity"));
+			response.setMessage(responseMsg.toString());
+			return response;
 		}
 		
 		return response;
