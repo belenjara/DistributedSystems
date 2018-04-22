@@ -22,9 +22,8 @@ public class MessageProcessing {
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
 			Register register = new Register(message);
-			
-			//send lock request...
-			
+			 response = register.doRegistration(conn, message);
+			 responses.add(response);
 			break;
 		
 		case Message.LOCK_REQUEST:
@@ -39,13 +38,17 @@ public class MessageProcessing {
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
 
+			response = new Login().loginProcess(conn,message);
+			responses.add(response);
+			
 			// if login OK, then:
 			Response responseRedirect = new Redirection().redirect();
-	        if (response != null) { responses.add(responseRedirect); }
+	        if (responseRedirect != null) { responses.add(responseRedirect); } 
 			break;
 			
 		case Message.LOGOUT:
 			conn.setType(Connection.TYPE_CLIENT);
+			
 			response.setCloseConnection(true);
 			responses.add(response);
 			break;
@@ -54,7 +57,7 @@ public class MessageProcessing {
 			conn.setType(Connection.TYPE_SERVER);
 			// the server receive a authentication message. 
 			Authentication authen = new Authentication();
-			//authen.processAuthentication();
+			//authen.processAuthentication();  
 			
 			response = authen.processAuthentication(conn,message);
 			responses.add(response);
@@ -62,7 +65,8 @@ public class MessageProcessing {
 			
 		case Message.ACTIVITY_MESSAGE:
 			conn.setType(Connection.TYPE_CLIENT);
-
+			response = new ActivityMsg().receiveActivityMsg(message, conn);
+			responses.add(response);
 			break;
 			
 		case Message.SERVER_ANNOUNCE:
@@ -74,6 +78,8 @@ public class MessageProcessing {
 			
 		case Message.ACTIVITY_BROADCAST:
 			conn.setType(Connection.TYPE_SERVER);
+			response = new ActivityBroadcast().receiveServerBroadcast(message, conn);
+			responses.add(response);
 			break;
 			
 		case Message.AUTHENTICATION_FAIL:
@@ -84,10 +90,18 @@ public class MessageProcessing {
 			
 		case Message.LOCK_ALLOWED:
 			conn.setType(Connection.TYPE_SERVER);
+			Lock lockAllowed = new Lock(message.getUsername(), message.getSecret());
+			response = lockAllowed.receiveLock_allowed(message);
+			responses.add(response);
+			break;
+			
 			break;
 			
 		case Message.LOCK_DENIED:
 			conn.setType(Connection.TYPE_SERVER);
+			Lock lockDenied = new Lock(message.getUsername(), message.getSecret());
+			response = lockDenied.receiveLockDenied(message);
+			responses.add(response);
 			break;
 			
 		case Message.INVALID_MESSAGE:

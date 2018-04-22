@@ -16,6 +16,7 @@ import messages.server.ServerAnnounce;
 import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
 import connections.server.AnnouncedServer;
+import connections.server.LockRequestInfo;
 import connections.server.RegisteredClient;
 
 public class Control extends Thread {
@@ -252,6 +253,7 @@ public class Control extends Thread {
 	 * @param msg
 	 * @param senderConn
 	 */
+	
 	public synchronized void broadcastAll(String msg, Connection senderConn) {
 		// Broadcast to all connected servers & clients.
 		List<Connection> connections = Control.getInstance().getConnections();
@@ -289,5 +291,13 @@ public class Control extends Thread {
 		}
 		
 		return countClients;	
+	}
+
+	public static ArrayList<LockRequestInfo> getLockInfolist() {
+		return lockInfolist;
+	}
+
+	public static void setLockInfolist(LockRequestInfo lockInfo) {
+		lockInfolist.add(lockInfo);
 	}
 }
