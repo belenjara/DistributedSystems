@@ -26,6 +26,7 @@ public class Message {
 	public static final String ACTIVITY = "activity";	
 	public static final String ID_SERVER = "id";
 	public static final String LOAD = "load";
+	public static final String ANONYMOUS = "anonymous";
 
 	public static final String INVALID_MESSAGE = "INVALID_MESSAGE";
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";

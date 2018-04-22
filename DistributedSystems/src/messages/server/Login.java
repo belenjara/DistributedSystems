@@ -18,14 +18,14 @@ public class Login {
 	public Response loginProcess(Connection conn, Message msg) {
 		Response response = new Response();
 		String username = msg.getUsername();
-		String anonymous = "anonymous";
+		String anonymous = Message.ANONYMOUS;
 		String enteredSecret = msg.getSecret();
 		ArrayList<RegisteredClient> registeredClients = Control.getInstance().getRegisteredClients();
 		String storedSecret = findSecret(username,registeredClients);
 		
 		
 		Message msgCheck = new Message();
-		msgCheck = msgCheck.CheckMessage(msg, Message.COMMAND);
+		msgCheck = Message.CheckMessage(msg, Message.COMMAND);
 		
 		if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setMessage(msgCheck.toString());
@@ -34,7 +34,7 @@ public class Login {
 		}
 		
 		msgCheck = new Message();
-		msgCheck = msgCheck.CheckMessage(msg, Message.USERNAME);
+		msgCheck = Message.CheckMessage(msg, Message.USERNAME);
 		
 		if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 			response.setMessage(msgCheck.toString());
@@ -44,7 +44,7 @@ public class Login {
 		
 		if (!username.equals(anonymous)) {
 			msgCheck = new Message();
-			msgCheck = msgCheck.CheckMessage(msg, Message.SECRET);
+			msgCheck = Message.CheckMessage(msg, Message.SECRET);
 			if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
 				response.setMessage(msgCheck.toString());
 				response.setCloseConnection(true);

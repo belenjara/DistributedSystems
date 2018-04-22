@@ -3,7 +3,6 @@ package messages.server;
 import activitystreamer.server.Connection;
 import activitystreamer.server.Control;
 import activitystreamer.util.Response;
-import activitystreamer.util.Settings;
 
 public class ActivityBroadcast {
 	

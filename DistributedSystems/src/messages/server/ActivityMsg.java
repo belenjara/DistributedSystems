@@ -18,14 +18,7 @@ public class ActivityMsg {
 		Boolean isAuth = connMan.serverIsAuthenticated(conn); //clientIsLogin should be in this case PERO PARECE QUE YA SE CONTROLA ANTES DE HACER EL BROADCAST EN CONTROL
 		
 		//"validate logged on client" is only from this server's clients - ADECUAR
-		if (!isAuth) {
-			Message msg = new Message();
-			msg.setCommand(Message.AUTHENTICATION_FAIL);
-			msg.setInfo(Message.ERROR_AUTH_INFO);
-			response.setCloseConnection(true);
-			response.setMessage(msg.toString());
-			return response;
-		}
+		
 		
 		//Validate structure of this message
 		Response valid = validateMessage(message);
@@ -33,6 +26,15 @@ public class ActivityMsg {
 			Message msg = new Message();
 			msg.setCommand(Message.INVALID_MESSAGE);
 			msg.setInfo(valid.getMessage());
+			response.setCloseConnection(true);
+			response.setMessage(msg.toString());
+			return response;
+		}
+		
+		if (!message.getUsername().equals(Message.ANONYMOUS) && !isAuth) {
+			Message msg = new Message();
+			msg.setCommand(Message.AUTHENTICATION_FAIL);
+			msg.setInfo(Message.ERROR_AUTH_INFO);
 			response.setCloseConnection(true);
 			response.setMessage(msg.toString());
 			return response;
@@ -60,11 +62,13 @@ public class ActivityMsg {
 				return response;
 			}
 			
-			responseMsg = Message.CheckMessage(msg, Message.SECRET);
-			if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
-				response.setCloseConnection(true);
-				response.setMessage(responseMsg.toString());
-				return response;
+			if (!msg.getUsername().equals(Message.ANONYMOUS)) {
+				responseMsg = Message.CheckMessage(msg, Message.SECRET);
+				if (responseMsg.getCommand().equals(Message.INVALID_MESSAGE)) {
+					response.setCloseConnection(true);
+					response.setMessage(responseMsg.toString());
+					return response;
+				}
 			}
 			
 			//We also need to validate in this case is there is a mismatch between the username and secret!!
