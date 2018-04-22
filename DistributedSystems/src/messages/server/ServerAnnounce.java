@@ -43,6 +43,7 @@ public class ServerAnnounce {
 	
 	public Response receiveServerAnnounce(Message message, Connection conn) {	
 		Response response = new Response();
+		response.setCloseConnection(false);
 		Control connMan = Control.getInstance();
 		Boolean isAuth = connMan.serverIsAuthenticated(conn);
 		

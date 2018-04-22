@@ -42,7 +42,7 @@ public class MessageProcessing {
 			// if login ok, then:
 			Response responseRedirect = new Redirection().redirect();
 	        if (response != null) { responses.add(responseRedirect); }
-			break;
+			break; 
 			
 		case Message.LOGOUT:
 			conn.setType(Connection.TYPE_CLIENT);
