@@ -44,7 +44,7 @@ Message msg;
 			
 			Response response = new Response();
 			Message messageResp = new Message();
-
+			response.setCloseConnection(false);
 			
 			List<RegisteredClient> registeredClients = Control.getInstance().getRegisteredClients();
 			
@@ -56,43 +56,32 @@ Message msg;
 				System.out.println("empty");
 
 			}
-			
-						
+									
 			if (check_client(registeredClients, message.getUsername()) != false) {
-			Lock lock = new Lock(message.getUsername(),message.getSecret());
+			    Lock lock = new Lock(message.getUsername(),message.getSecret());
 				
-			lock.Lock_request(conn, message.getUsername(), message.getSecret());
+			    Response responselock = lock.Lock_request(conn, message.getUsername(), message.getSecret());
+			    
+			    Message msglock = new Message(responselock.getMessage());
 
-				RegisteredClient client = new RegisteredClient();
-				
-				client.setUsername(message.getUsername());
-				client.setSecret(message.getSecret());
-				Control.getInstance().addRegisteredClients(client) ;
-				messageResp.setCommand(Message.REGISTER_SUCCESS);
-				messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, message.getUsername()));
-				response.setMessage(messageResp.toString());
-				response.setCloseConnection(false);
-				System.out.println("ok");
-	
-			
-			}
-			
+			    if (msglock.getCommand() == Message.REGISTER_SUCCESS) {
+					RegisteredClient client = new RegisteredClient();		
+					client.setUsername(message.getUsername());
+					client.setSecret(message.getSecret());
+					Control.getInstance().addRegisteredClients(client) ;
+					messageResp.setCommand(Message.REGISTER_SUCCESS);
+					messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, message.getUsername()));
+					response.setMessage(messageResp.toString());
+					response.setCloseConnection(false);
+					System.out.println("ok");
+			    }			
+			}	
 			else if(check_client(registeredClients, message.getUsername()) == true){
 				messageResp.setCommand(Message.REGISTER_FAILED);
 				messageResp.setInfo(String.format(Message.REGISTER_FAILED_INFO, message.getUsername()));
 				response.setMessage(messageResp.toString());
 				response.setCloseConnection(true);
 				System.out.println("Error");
-			
-			
-			/*Message messageResp = new Message();
-			messageResp.setCommand(Message.REGISTER_SUCCESS);
-			messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, msg.getUsername()));
-			
-			response.setMessage(messageResp.toString());
-			response.setCloseConnection(false);*/
-				
-				// TODO: the broadcast of lockrequest
 			}
 			
 			return response;

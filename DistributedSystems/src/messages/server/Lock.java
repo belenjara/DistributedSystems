@@ -24,21 +24,28 @@ Control conm = Control.getInstance();
 	public Response Lock_request(Connection conn,String user, String secret) {
 		Response lockrep = new Response();
 		Message messageResp = new Message();
-		messageResp.setCommand(Message.LOCK_REQUEST);
-		messageResp.setUsername(user);
-		messageResp.setSecret(secret);
+
 		
-		LockRequestInfo lockInfo = new LockRequestInfo();
-		lockInfo.setUsername(user);
-		lockInfo.setServerResponses(0);
-		lockInfo.setServersNumber(Control.getInstance().getNumberServersConnected());
-		lockInfo.setClientConnection(conn);
-		Control.getInstance().setLockInfolist(lockInfo);
+		int serversConnected = Control.getInstance().getNumberServersConnected();
 		
-		Control.getInstance().broadcastServers(messageResp.toString(), conn);
-		
-		
-		
+		// if this server is connected to other servers, we do the lock_request
+		if (serversConnected > 0) {
+			messageResp.setCommand(Message.LOCK_REQUEST);
+			messageResp.setUsername(user);
+			messageResp.setSecret(secret);
+			LockRequestInfo lockInfo = new LockRequestInfo();
+			lockInfo.setUsername(user);
+			lockInfo.setServerResponses(0);
+			lockInfo.setServersNumber(serversConnected);
+			lockInfo.setClientConnection(conn);
+			Control.getInstance().setLockInfolist(lockInfo);			
+			Control.getInstance().broadcastServers(messageResp.toString(), conn);
+		}else {
+			// if this server is not connected to other servers, we register the client.
+			messageResp.setCommand(Message.REGISTER_SUCCESS);
+			messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, this.username));
+		}
+				
 		return lockrep;
 	}
 	
@@ -85,6 +92,7 @@ Control conm = Control.getInstance();
 				messageResp.setCommand(Message.REGISTER_FAILED);
 				messageResp.setInfo(String.format(Message.REGISTER_FAILED_INFO, this.username));	
 				log.getClientConnection().writeMsg(messageResp.toString());
+				response.setCloseConnection(true);
 				logreq = log;
 				break;
 			}
@@ -110,12 +118,14 @@ Control conm = Control.getInstance();
 			messageResp.setCommand(Message.INVALID_MESSAGE);
 			messageResp.setInfo(Message.ERROR_COMMAND_INFO);
 			response.setMessage(messageResp.toString());
+			response.setCloseConnection(true);
 			return response;
 		} else if(this.username == null || this.username == "") {
 			Message messageResp = new Message();
 			messageResp.setCommand(Message.INVALID_MESSAGE);
 			messageResp.setInfo(Message.ERROR_COMMAND_INFO);
 			response.setMessage(messageResp.toString());
+			response.setCloseConnection(true);
 			return response;
 			// TODO: check message
 		}
@@ -152,7 +162,7 @@ Control conm = Control.getInstance();
 			
 			// allowed
 		}	
-		return null;
+		return response;
 	}
 	
 }

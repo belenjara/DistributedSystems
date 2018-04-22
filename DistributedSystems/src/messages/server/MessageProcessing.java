@@ -27,8 +27,12 @@ public class MessageProcessing {
 			break;
 		
 		case Message.LOCK_REQUEST:
-			// when this server receives a lock request...
 			conn.setType(Connection.TYPE_SERVER);
+			//receiveLockRequest
+			Lock lockrequest = new Lock(message.getUsername(), message.getSecret());
+			response = lockrequest.receiveLockRequest(conn, message);
+			responses.add(response);
+			break;
 			break;
 			
 		case Message.LOGIN:
@@ -95,7 +99,7 @@ public class MessageProcessing {
 			responses.add(response);
 			break;
 			
-			break;
+	
 			
 		case Message.LOCK_DENIED:
 			conn.setType(Connection.TYPE_SERVER);

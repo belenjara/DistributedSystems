@@ -27,6 +27,8 @@ public class Control extends Thread {
 	
 	private static ArrayList<RegisteredClient> registeredClients;
 	
+    private static ArrayList<LockRequestInfo> lockInfolist;
+
 	//// TODO: add logged clients list...
 	
 	private static boolean term=false;
@@ -59,6 +61,9 @@ public class Control extends Thread {
 		announcedServers = new ArrayList<AnnouncedServer>();
 		
 		//// here or in run method??
+		
+		lockInfolist = new ArrayList<LockRequestInfo>();
+
 		initiateConnection();
 		
 		start();
@@ -291,6 +296,22 @@ public class Control extends Thread {
 		}
 		
 		return countClients;	
+	}
+
+	/**
+	 * @return number of servers connected.
+	 */
+	public int getNumberServersConnected(){		
+		List<Connection> connections = Control.getInstance().getConnections();
+		int countServers = 0;
+		
+		for(Connection c : connections) {
+			if (c.getType() == Connection.TYPE_SERVER && c.getAuth() && c.isOpen()) {
+				countServers++;
+			}
+		}
+		
+		return countServers;	
 	}
 
 	public static ArrayList<LockRequestInfo> getLockInfolist() {
