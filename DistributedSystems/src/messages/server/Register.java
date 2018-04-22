@@ -52,18 +52,20 @@ private Message msg;
 				
 			    Response responselock = lock.Lock_request(conn, message.getUsername(), message.getSecret());
 			    
-			    Message msglock = new Message(responselock.getMessage());
-
-			    if (msglock.getCommand() == Message.REGISTER_SUCCESS) {
-					RegisteredClient client = new RegisteredClient();		
-					client.setUsername(message.getUsername());
-					client.setSecret(message.getSecret());
-					Control.getInstance().addRegisteredClients(client) ;
-					messageResp.setCommand(Message.REGISTER_SUCCESS);
-					messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, message.getUsername()));
-					response.setMessage(messageResp.toString());
-					response.setCloseConnection(false);
-					System.out.println("ok");
+			    if (responselock.getMessage() != null) {
+				    Message msglock = new Message(responselock.getMessage());
+	
+				    if (msglock.getCommand().equals(Message.REGISTER_SUCCESS)) {
+						RegisteredClient client = new RegisteredClient();		
+						client.setUsername(message.getUsername());
+						client.setSecret(message.getSecret());
+						Control.getInstance().addRegisteredClients(client) ;
+						messageResp.setCommand(Message.REGISTER_SUCCESS);
+						messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, message.getUsername()));
+						response.setMessage(messageResp.toString());
+						response.setCloseConnection(false);
+						System.out.println("ok");
+			    }
 			    }			
 			}	// This server knows the client.
 			else if(check_client(registeredClients, message.getUsername()) == true){
@@ -87,13 +89,14 @@ private Message msg;
 	
 	
 	public Boolean check_client (List<RegisteredClient> clientsList, String usernameToFind) {
-		if(clientsList.contains(usernameToFind)) {
-			return true;
+		
+		for(RegisteredClient c : clientsList) {
+			if (c.getUsername().equals(usernameToFind)) {
+				return true;
+			}
 		}
-		else {
-			return false; 
-		}
-		}
+		return false; 
+	}
 		
 		
 	

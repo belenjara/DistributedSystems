@@ -56,6 +56,7 @@ public class Login {
 		 * if the secret for an entered username is wrong or username can't be found, send "LOGIN_FAILED" and close the connection
 		 * if both username and secret are right, then "LOGIN_SUCCESS"
 		 */
+		msg = new Message();
 		if(username.equals(anonymous)) {
 			msg.setCommand(Message.LOGIN_SUCCESS);
 			msg.setInfo(String.format(Message.LOGIN_SUCCESS_INFO, username));

@@ -18,7 +18,9 @@ Control conm = Control.getInstance();
 	public Response Lock_request(Connection conn,String user, String secret) {
 		Response lockrep = new Response();
 		Message messageResp = new Message();
-
+		
+		lockrep.setCloseConnection(false);
+        lockrep.setMessage(null);
 		
 		int serversConnected = Control.getInstance().getNumberServersConnected();
 		
@@ -38,6 +40,7 @@ Control conm = Control.getInstance();
 			// if this server is not connected to other servers, we register the client.
 			messageResp.setCommand(Message.REGISTER_SUCCESS);
 			messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, this.username));
+			lockrep.setMessage(messageResp.toString());
 		}
 				
 		return lockrep;
