@@ -101,7 +101,7 @@ public class Control extends Thread {
 	 * Return true if the connection should close.
 	 */
 	public synchronized boolean process(Connection con,String msg){
-		log.info("I received a msg from the client: " + msg);
+		//log.info("I received a msg from the client: " + msg);
 
 		//// Process the message according to its command. A list of responses is returned.
 		List<Response> responses = new MessageProcessing().processMsg(con, msg);
@@ -301,14 +301,12 @@ public class Control extends Thread {
 	/**
 	 * @return number of servers connected.
 	 */
-	public int getNumberServersConnected(){		
-		List<Connection> connections = Control.getInstance().getConnections();
+	public int getNumberServersAnnounced(){		
+		List<AnnouncedServer> announcedServers = Control.getInstance().getAnnouncedServers();
 		int countServers = 0;
 
-		for(Connection c : connections) {
-			if (c.getType() == Connection.TYPE_SERVER && c.getAuth() && c.isOpen()) {
-				countServers++;
-			}
+		for(AnnouncedServer a : announcedServers) {
+			countServers++;
 		}
 
 		return countServers;	

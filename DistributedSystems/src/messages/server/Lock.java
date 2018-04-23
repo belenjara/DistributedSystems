@@ -29,17 +29,17 @@ public class Lock {
 		lockrep.setCloseConnection(false);
 		lockrep.setMessage(null);
 
-		int serversConnected = Control.getInstance().getNumberServersConnected();
+		int serversAnnounced = Control.getInstance().getNumberServersAnnounced();
 
 		// if this server is connected to other servers, we do the LOCK_REQUEST.
-		if (serversConnected > 0) {
+		if (serversAnnounced > 0) {
 			messageResp.setCommand(Message.LOCK_REQUEST);
 			messageResp.setUsername(this.username);
 			messageResp.setSecret(this.secret);
 			LockRequestInfo lockInfo = new LockRequestInfo();
 			lockInfo.setUsername(this.username);
 			lockInfo.setServerResponses(0);
-			lockInfo.setServersNumber(serversConnected);
+			lockInfo.setServersNumber(serversAnnounced);
 			lockInfo.setClientConnection(conn);
 			Control.getInstance().setLockInfolist(lockInfo);			
 			Control.getInstance().broadcastServers(messageResp.toString(), conn);
@@ -93,6 +93,8 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
+		
+		Control.getInstance().broadcastServers(message.toString(), conn);
 		
 		// We get the lock request list and we update it to know of all the server allowed  
 		// the registration of the client.
@@ -160,12 +162,15 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
+		
+		Control.getInstance().broadcastServers(message.toString(), conn);
 
 		// We obtain the lock request list.
 		List<LockRequestInfo> lockList = Control.getInstance().getLockInfolist();
 		for(LockRequestInfo log : lockList) {
 			if(log.getUsername().equals(this.username)) {
-				// When we find the lock request for the client, we send a REGISTER_FAILED response to its connection.
+				// When we find the lock request for the client, 
+				//we send a REGISTER_FAILED response to its connection.
 				Message messageResp = new Message();
 				messageResp.setCommand(Message.REGISTER_FAILED);
 				messageResp.setInfo(String.format(Message.REGISTER_FAILED_INFO, this.username));	
@@ -240,6 +245,8 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
+		
+		Control.getInstance().broadcastServers(message.toString(), conn);
 
 		// We search in our registered clients list if the client exists with the username and secret.
 		boolean clientExists = false;

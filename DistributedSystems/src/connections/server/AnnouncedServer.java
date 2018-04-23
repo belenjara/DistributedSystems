@@ -1,12 +1,11 @@
 package connections.server;
-
 import messages.server.Message;
 
 public class AnnouncedServer {
 	private String serverId;
     private String hostname;
     private int port;
-    private int load; 
+    private int load;
     
    
     public AnnouncedServer(Message msg) {
