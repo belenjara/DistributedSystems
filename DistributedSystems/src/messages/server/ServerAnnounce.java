@@ -9,7 +9,7 @@ import connections.server.AnnouncedServer;
 public class ServerAnnounce {
 	//private static final Logger log = LogManager.getLogger();
 	
-    public static final String ID = "TAIPY-SERVER-1234";
+    
 
 			
 	public Boolean sendServerAnnounce() {
@@ -17,7 +17,7 @@ public class ServerAnnounce {
 		try {
 			Message msg = new Message();
 			msg.setCommand(Message.SERVER_ANNOUNCE);
-			msg.setId(ID);
+			msg.setId(Settings.ID_SERVER);
 			msg.setHostname(Settings.getLocalHostname());
 			msg.setPort(Settings.getLocalPort());
 			

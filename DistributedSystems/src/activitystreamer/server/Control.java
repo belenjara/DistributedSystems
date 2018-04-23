@@ -209,11 +209,11 @@ public class Control extends Thread {
 	 * @param announcedServer
 	 */
 	public static void addAnnouncedServers(AnnouncedServer announcedServer) {	
-		if (!Control.announcedServers.contains(announcedServer)) {
-			Control.announcedServers.add(announcedServer);
-		}
-		else {		
-			Control.announcedServers.set(Control.announcedServers.indexOf(announcedServer), announcedServer);		
+		//if (!Control.announcedServers.contains(announcedServer)) {
+		for(AnnouncedServer as : Control.announcedServers) {
+			if (!as.getServerId().equals(announcedServer.getServerId())) {
+				Control.announcedServers.add(announcedServer);
+			}
 		}
 	}
 
@@ -303,11 +303,7 @@ public class Control extends Thread {
 	 */
 	public int getNumberServersAnnounced(){		
 		List<AnnouncedServer> announcedServers = Control.getInstance().getAnnouncedServers();
-		int countServers = 0;
-
-		for(AnnouncedServer a : announcedServers) {
-			countServers++;
-		}
+		int countServers = announcedServers.size();
 
 		return countServers;	
 	}
