@@ -276,12 +276,10 @@ public class Message {
 		}
 
 		if (jsonMsg.containsKey(PORT)) {
-			log.info("port " + jsonMsg.get(PORT));
 			this.port = Integer.parseInt(jsonMsg.get(PORT).toString());
 		}
 
 		if (jsonMsg.containsKey(LOAD)) {
-			log.info("load " + jsonMsg.get(LOAD));
 			this.load =Integer.parseInt(jsonMsg.get(LOAD).toString());
 		}
 
