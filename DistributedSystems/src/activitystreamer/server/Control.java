@@ -246,7 +246,7 @@ public class Control extends Thread {
 				Boolean isSender = (senderConn != null && sc.equals(senderConn));
 				//// We don't want to send to the original sender
 				if (!isSender) {
-					log.info("SendServerAnnounce : " + msg);
+					//log.info("Msg broadcast to servers : " + msg);
 					sc.writeMsg(msg);
 				}	
 			}

@@ -3,12 +3,17 @@ package messages.server;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 import activitystreamer.server.Connection;
 import activitystreamer.util.Response;
 
 public class MessageProcessing {
-	
+	private static final Logger log = LogManager.getLogger();
+
 	public List<Response> processMsg(Connection conn, String msg) {
+		log.info("I received a msg from the client: " + msg);
 		Message message = new Message(msg);
 		Response response = new Response();
 		List<Response> responses = new ArrayList<Response>();				
