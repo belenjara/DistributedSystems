@@ -215,11 +215,10 @@ public class Control extends Thread {
 		}
 		else {
 			for(AnnouncedServer as : Control.announcedServers) {
-				exist = true;
 				if (as.getServerId().equals(announcedServer.getServerId())) {
+					exist = true;
 					as.setPort(announcedServer.getPort());
 					as.setLoad(announcedServer.getLoad());	
-					as.setServerId(announcedServer.getServerId());
 					as.setHostname(announcedServer.getServerId());
 					break;
 				}
