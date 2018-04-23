@@ -61,6 +61,7 @@ public class Login {
 			msg.setCommand(Message.LOGIN_SUCCESS);
 			msg.setInfo(String.format(Message.LOGIN_SUCCESS_INFO, username));
 			response.setCloseConnection(false);
+			conn.setAuth(true);
 			//System.out.println("login success as anonymous!");
 			
 		}else if (enteredSecret.equals(storedSecret)) {
@@ -75,7 +76,6 @@ public class Login {
 			response.setCloseConnection(true);
 			//System.out.println("login fail!");
 		}
-		
 		
 		response.setMessage(msg.toString());
 		return response;
