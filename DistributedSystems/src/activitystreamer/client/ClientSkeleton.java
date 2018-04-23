@@ -30,9 +30,9 @@ public class ClientSkeleton extends Thread {
 			clientSolution = new ClientSkeleton();
 			socket = null;
 			try {
-				System.out.println("Client: going to connect to server");
+				log.info("Client: going to connect to server");
 				socket = new Socket(Settings.getRemoteHostname(), Settings.getRemotePort());
-				System.out.println("Connection established");
+				log.info("Connection established");
 				doLogin();
 			} catch (UnknownHostException e) {
 				// TODO Auto-generated catch block
@@ -84,6 +84,7 @@ public class ClientSkeleton extends Thread {
 		if (username.equals("anonymous")) {
 			msg.setCommand(Message.LOGIN);
 			msg.setUsername(username);
+			log.info("Sending login as an anonymous: " + msg.toString());
 			writeMsg(msg.toString());
 			
 		} else {
@@ -93,7 +94,7 @@ public class ClientSkeleton extends Thread {
 				newSecret = true;
 			}
 			
-			System.out.println("Sending register message to the server, please wait...");
+			log.info("Sending register message to the server, please wait...");
 			msg.setCommand(Message.REGISTER);
 			msg.setUsername(username);
 			msg.setSecret(secret);
@@ -107,10 +108,10 @@ public class ClientSkeleton extends Thread {
 					String msgStr = output.toJSONString();
 					Message messageResp = new Message(msgStr);
 					
-					System.out.println("After registering => The server response: " + msgStr);
+					log.info("After registering => The server response: " + msgStr);
 					
 					if (messageResp.getCommand().equals(Message.REGISTER_SUCCESS)) {
-						System.out.println("Sending login message to the server, please wait...");
+						log.info("Sending login message to the server, please wait...");
 						msg.setCommand(Message.LOGIN);
 						msg.setUsername(username);
 						msg.setSecret(secret);
@@ -122,16 +123,16 @@ public class ClientSkeleton extends Thread {
 					msgStr = output.toJSONString();
 					messageResp = new Message(msgStr);
 					
-					System.out.println("After login => The server response: " + msgStr);
+					log.info("After login => The server response: " + msgStr);
 					
 					if (messageResp.getCommand().equals(Message.LOGIN_SUCCESS)) {	
 						if (newSecret) {
-							System.out.println("Secret generated: " + secret);
+							log.info("Secret generated: " + secret);
 						}
 					}			
 				} catch (ParseException | IOException e) {
 					// TODO Auto-generated catch block
-					System.out.println("An error ocurred.");
+					log.error("An error ocurred.");
 					e.printStackTrace();
 				}
 			}		
@@ -140,14 +141,14 @@ public class ClientSkeleton extends Thread {
 	
 	private static void writeMsg(String msg){
 		if (socket != null) {
-			System.out.println("Msg to send to the server: " + msg);
+			log.info("Msg to send to the server: " + msg);
 			
 			try {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
 				
 				out.write(msg + "\n");
 				out.flush();
-				System.out.println("Message sent");
+				log.info("Message sent");
 				
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
@@ -158,7 +159,7 @@ public class ClientSkeleton extends Thread {
 			}
 		}
 		else {
-			System.out.println("socket is null...");
+			log.error("socket is null...");
 		}
 	}
 	

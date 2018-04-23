@@ -101,7 +101,7 @@ public class Control extends Thread {
 	 * Return true if the connection should close.
 	 */
 	public synchronized boolean process(Connection con,String msg){
-		System.out.println("I received a msg from the client: " + msg);
+		log.info("I received a msg from the client: " + msg);
 
 		//// Process the message according to its command. A list of responses is returned.
 		List<Response> responses = new MessageProcessing().processMsg(con, msg);
@@ -110,12 +110,12 @@ public class Control extends Thread {
 		for(Response response : responses) {
 			if (response.getMessage() != null && !response.getMessage().equals("")) {
 				//// Write the response to the client (or server).
-				System.out.println("I will respond this to the client: " + response.getMessage());
+				log.info("I will respond this to the client: " + response.getMessage());
 				con.writeMsg(response.getMessage());
 			}		
 			//// If is necessary to close the connection.
 			if (response.getCloseConnection()) {
-				System.out.println("I will close the client's connection..");
+				log.info("I will close the client's connection..");
 				return true;
 			}
 		}
