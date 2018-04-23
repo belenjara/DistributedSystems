@@ -1,14 +1,16 @@
 package messages.server;
 
 import java.util.HashMap;
+
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import activitystreamer.util.Settings;
-
-
 public class Message {
+	private static final Logger log = LogManager.getLogger();
+	
 	private String command;
 	private String info;
 	private String username;
@@ -274,11 +276,13 @@ public class Message {
 		}
 
 		if (jsonMsg.containsKey(PORT)) {
+			log.info("port " + jsonMsg.get(PORT));
 			this.port =(int)jsonMsg.get(PORT);
 		}
 
 		if (jsonMsg.containsKey(LOAD)) {
-			this.load =(Integer)jsonMsg.get(LOAD);
+			log.info("load " + jsonMsg.get(LOAD));
+			this.load =(int)jsonMsg.get(LOAD);
 		}
 
 		if (jsonMsg.containsKey(ACTIVITY)) {
