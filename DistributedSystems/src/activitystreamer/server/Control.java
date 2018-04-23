@@ -214,6 +214,9 @@ public class Control extends Thread {
 			if (!as.getServerId().equals(announcedServer.getServerId())) {
 				Control.announcedServers.add(announcedServer);
 			}
+			else {
+				as = announcedServer;
+			}
 		}
 	}
 
