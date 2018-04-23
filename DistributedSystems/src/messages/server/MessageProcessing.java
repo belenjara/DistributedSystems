@@ -22,7 +22,7 @@ public class MessageProcessing {
 		switch(command) {					
 		case Message.REGISTER:
 			conn.setType(Connection.TYPE_CLIENT);
-			response = new Register(message).doRegistration(conn, message);
+			response = new Register().doRegistration(conn, message);
 			responses.add(response);
 			break;
 		
@@ -39,7 +39,6 @@ public class MessageProcessing {
 			//// First login, if success, then check for redirect:
 			//// The server will follow up a LOGIN_SUCCESS message with a REDIRECT message if the server knows of
 			////any other server with a load at least 2 clients less than its own.
-
 			response = new Login().loginProcess(conn,message);
 			responses.add(response);
 			
@@ -58,7 +57,7 @@ public class MessageProcessing {
 			conn.setType(Connection.TYPE_SERVER);
 			// the server receive a authentication message. 
 			Authentication authen = new Authentication();			
-			response = authen.processAuthentication(conn,message);
+			response = authen.processAuthentication(conn, message);
 			responses.add(response);
 			break;
 			
@@ -90,14 +89,14 @@ public class MessageProcessing {
 		case Message.LOCK_ALLOWED:
 			conn.setType(Connection.TYPE_SERVER);
 			Lock lockAllowed = new Lock(message.getUsername(), message.getSecret());
-			response = lockAllowed.receiveLock_allowed(message);
+			response = lockAllowed.receiveLockAllowed(conn, message);
 			responses.add(response);
 			break;
 						
 		case Message.LOCK_DENIED:
 			conn.setType(Connection.TYPE_SERVER);
 			Lock lockDenied = new Lock(message.getUsername(), message.getSecret());
-			response = lockDenied.receiveLockDenied(message);
+			response = lockDenied.receiveLockDenied(conn, message);
 			responses.add(response);
 			break;
 			
@@ -107,7 +106,7 @@ public class MessageProcessing {
 			responses.add(response);
 			break;
 				
-			// any unknown command
+		// any unknown command
 		default:
 			response.setMessage(new Message().getInvalidMessage());
 			response.setCloseConnection(true);	

@@ -5,6 +5,8 @@ import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import activitystreamer.util.Settings;
+
 
 public class Message {
 	private String command;
@@ -27,6 +29,7 @@ public class Message {
 	public static final String ID_SERVER = "id";
 	public static final String LOAD = "load";
 	public static final String ANONYMOUS = "anonymous";
+	public static final String AUTHENTICATED_USER = "authenticated_user";
 
 	public static final String INVALID_MESSAGE = "INVALID_MESSAGE";
 	public static final String ERROR_JSON_INFO = "JSON parse error while parsing message";
