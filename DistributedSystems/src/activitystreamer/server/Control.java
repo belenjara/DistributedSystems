@@ -209,13 +209,18 @@ public class Control extends Thread {
 	 * @param announcedServer
 	 */
 	public static void addAnnouncedServers(AnnouncedServer announcedServer) {	
-		//if (!Control.announcedServers.contains(announcedServer)) {
-		for(AnnouncedServer as : Control.announcedServers) {
-			if (!as.getServerId().equals(announcedServer.getServerId())) {
-				Control.announcedServers.add(announcedServer);
-			}
-			else {
-				as = announcedServer;
+		if (Control.announcedServers.size() == 0) {
+			Control.announcedServers.add(announcedServer);
+		}
+		else {
+			for(AnnouncedServer as : Control.announcedServers) {
+				if (!as.getServerId().equals(announcedServer.getServerId())) {
+					Control.announcedServers.add(announcedServer);
+				}
+				else {
+					
+					as = announcedServer;
+				}
 			}
 		}
 	}
