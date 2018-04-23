@@ -219,7 +219,7 @@ public class Control extends Thread {
 					exist = true;
 					as.setPort(announcedServer.getPort());
 					as.setLoad(announcedServer.getLoad());	
-					as.setHostname(announcedServer.getServerId());
+					as.setHostname(announcedServer.getHostname());
 					break;
 				}
 			}
