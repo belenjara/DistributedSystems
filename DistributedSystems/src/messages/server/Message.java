@@ -37,6 +37,8 @@ public class Message {
 	public static final String ERROR_AUTH_INFO = "Server not authenticated";
 	
 	public static final String ERROR_AUTH_INFO2 = "Server already authenticated";
+	
+	public static final String ERROR_AUTH_INFO3 = "Client not logged in";
 
 	public static final String ERROR_PROPERTIES_INFO = "the received message did not contain %s";
 
