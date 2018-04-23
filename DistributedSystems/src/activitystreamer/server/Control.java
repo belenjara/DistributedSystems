@@ -208,22 +208,30 @@ public class Control extends Thread {
 	 * Add a new server to the list of announced servers, if the server already is in the list, is updated.
 	 * @param announcedServer
 	 */
-	public static void addAnnouncedServers(AnnouncedServer announcedServer) {	
+	public static void addAnnouncedServers(AnnouncedServer announcedServer) {
+		boolean exist = false;
 		if (Control.announcedServers.size() == 0) {
 			Control.announcedServers.add(announcedServer);
 		}
 		else {
 			for(AnnouncedServer as : Control.announcedServers) {
-				if (!as.getServerId().equals(announcedServer.getServerId())) {
-					Control.announcedServers.add(announcedServer);
+				exist = true;
+				if (as.getServerId().equals(announcedServer.getServerId())) {
+					as.setPort(announcedServer.getPort());
+					as.setLoad(announcedServer.getLoad());	
+					as.setServerId(announcedServer.getServerId());
+					as.setHostname(announcedServer.getServerId());
+					break;
 				}
-				else {
-					
-					as = announcedServer;
-				}
+			}
+			
+			if (!exist) {
+			  Control.announcedServers.add(announcedServer);
 			}
 		}
 	}
+	
+	
 
 	/**
 	 * Get the list of clients that are registered.
