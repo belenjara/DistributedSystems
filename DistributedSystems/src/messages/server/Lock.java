@@ -48,6 +48,11 @@ public class Lock {
 			messageResp.setCommand(Message.REGISTER_SUCCESS);
 			messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, this.username));
 			lockrep.setMessage(messageResp.toString());
+			
+			RegisteredClient client = new RegisteredClient();		
+			client.setUsername(this.username);
+			client.setSecret(this.secret);
+			Control.getInstance().addRegisteredClients(client);
 		}
 
 		return lockrep;
@@ -105,6 +110,11 @@ public class Lock {
 
 					// We respond back to the client REGISTER_SUCCESS
 					log.getClientConnection().writeMsg(messageResp.toString());
+					
+					RegisteredClient client = new RegisteredClient();		
+					client.setUsername(this.username);
+					client.setSecret(this.secret);
+					Control.getInstance().addRegisteredClients(client);
 				}
 				break;
 			}
