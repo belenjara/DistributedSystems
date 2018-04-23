@@ -93,7 +93,7 @@ public class ClientSkeleton extends Thread {
 				newSecret = true;
 			}
 			
-			log.info("Sending register message to the server, please wait...");
+			System.out.println("Sending register message to the server, please wait...");
 			msg.setCommand(Message.REGISTER);
 			msg.setUsername(username);
 			msg.setSecret(secret);
@@ -107,10 +107,10 @@ public class ClientSkeleton extends Thread {
 					String msgStr = output.toJSONString();
 					Message messageResp = new Message(msgStr);
 					
-					log.info("After registering => The server response: " + msgStr);
+					System.out.println("After registering => The server response: " + msgStr);
 					
 					if (messageResp.getCommand().equals(Message.REGISTER_SUCCESS)) {
-						log.info("Sending login message to the server, please wait...");
+						System.out.println("Sending login message to the server, please wait...");
 						msg.setCommand(Message.LOGIN);
 						msg.setUsername(username);
 						msg.setSecret(secret);
@@ -122,16 +122,16 @@ public class ClientSkeleton extends Thread {
 					msgStr = output.toJSONString();
 					messageResp = new Message(msgStr);
 					
-					log.info("After login => The server response: " + msgStr);
+					System.out.println("After login => The server response: " + msgStr);
 					
 					if (messageResp.getCommand().equals(Message.LOGIN_SUCCESS)) {	
 						if (newSecret) {
-							log.info("Secret generated: " + secret);
+							System.out.println("Secret generated: " + secret);
 						}
 					}			
 				} catch (ParseException | IOException e) {
 					// TODO Auto-generated catch block
-					log.error("An error ocurred.");
+					System.out.println("An error ocurred.");
 					e.printStackTrace();
 				}
 			}		
@@ -140,7 +140,7 @@ public class ClientSkeleton extends Thread {
 	
 	private static void writeMsg(String msg){
 		if (socket != null) {
-			log.info("Msg: " + msg);
+			System.out.println("Msg to send to the server: " + msg);
 			
 			try {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
@@ -158,7 +158,7 @@ public class ClientSkeleton extends Thread {
 			}
 		}
 		else {
-			log.info("socket is null...");
+			System.out.println("socket is null...");
 		}
 	}
 	
