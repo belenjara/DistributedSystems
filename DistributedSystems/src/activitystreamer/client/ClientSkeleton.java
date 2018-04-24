@@ -21,7 +21,7 @@ import messages.server.Message;
 public class ClientSkeleton extends Thread {
 	private static final Logger log = LogManager.getLogger();
 	private static ClientSkeleton clientSolution;
-	private TextFrame textFrame;
+	private static TextFrame textFrame;
 	public static Socket socket;
 	private static JSONParser parser = new JSONParser();
 
@@ -81,11 +81,27 @@ public class ClientSkeleton extends Thread {
 		String secret = Settings.getSecret();
 		Message msg = new Message();
 
-		if (username.equals("anonymous")) {
-			msg.setCommand(Message.LOGIN);
-			msg.setUsername(username);
-			log.info("Sending login as an anonymous: " + msg.toString());
-			writeMsg(msg.toString());
+		if (username.equals(Message.ANONYMOUS)) {
+			if (socket != null) {
+				BufferedReader in;
+				msg.setCommand(Message.LOGIN);
+				msg.setUsername(username);
+				log.info("Sending login as an anonymous: " + msg.toString());
+				writeMsg(msg.toString());
+
+				try {
+					in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
+					JSONObject output = (JSONObject)parser.parse(in.readLine());		
+					showTextInframe(output);
+					String msgStr = output.toJSONString();
+					Message messageResp = new Message(msgStr);
+					log.info("After login => The server response: " + msgStr);
+
+				} catch (ParseException | IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
 
 		} else {
 			boolean newSecret = false;
@@ -104,7 +120,8 @@ public class ClientSkeleton extends Thread {
 					writeMsg(msg.toString());
 
 					in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
-					JSONObject output = (JSONObject)parser.parse(in.readLine());				
+					JSONObject output = (JSONObject)parser.parse(in.readLine());	
+					showTextInframe(output);
 					String msgStr = output.toJSONString();
 					Message messageResp = new Message(msgStr);
 
@@ -120,7 +137,7 @@ public class ClientSkeleton extends Thread {
 							socket = new Socket(Settings.getRemoteHostname(), Settings.getRemotePort());
 						}
 						catch (Exception e){
-							
+
 						}
 						msg = new Message();
 						msg.setCommand(Message.REGISTER);
@@ -130,8 +147,9 @@ public class ClientSkeleton extends Thread {
 
 						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
 						String msgServer = in.readLine();
-						output = (JSONObject)parser.parse(msgServer);				
-						msgStr = output.toJSONString();
+						output = (JSONObject)parser.parse(msgServer);
+						showTextInframe(output);
+						msgStr = output.toJSONString();			
 						messageResp = new Message(msgStr);
 
 						log.info("After register => The server response: " + msgStr);
@@ -144,7 +162,8 @@ public class ClientSkeleton extends Thread {
 							writeMsg(msg.toString());
 
 							in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
-							output = (JSONObject)parser.parse(in.readLine());				
+							output = (JSONObject)parser.parse(in.readLine());	
+							showTextInframe(output);
 							msgStr = output.toJSONString();
 							messageResp = new Message(msgStr);
 
@@ -153,23 +172,17 @@ public class ClientSkeleton extends Thread {
 							if (messageResp.getCommand().equals(Message.LOGIN_SUCCESS)) {	
 								if (newSecret) {
 									log.info("Secret generated: " + secret);
+
+									in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
+									output = (JSONObject)parser.parse(in.readLine());
+									showTextInframe(output);
+									msgStr = output.toJSONString();
+									messageResp = new Message(msgStr);
+
+									log.info("The server response: " + msgStr);
 								}
 							}
 						}
-						
-					/*	try {
-							socket = new Socket(Settings.getRemoteHostname(), Settings.getRemotePort());
-						}
-						catch (Exception e){
-							
-						}*/
-						
-						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
-						output = (JSONObject)parser.parse(in.readLine());				
-						msgStr = output.toJSONString();
-						messageResp = new Message(msgStr);
-
-						log.info("The server response: " + msgStr);
 					}
 
 				} catch (ParseException | IOException e) {
@@ -201,6 +214,13 @@ public class ClientSkeleton extends Thread {
 		else {
 			log.error("socket is null...");
 		}
+	}
+
+	private static void showTextInframe(JSONObject msg) {
+		if (msg != null) {
+			textFrame.setOutputText(msg);
+		}
+		//setOutputText
 	}
 
 	public void run(){
