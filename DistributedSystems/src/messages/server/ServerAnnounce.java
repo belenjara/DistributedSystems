@@ -6,28 +6,22 @@ import activitystreamer.util.Response;
 import activitystreamer.util.Settings;
 import connections.server.AnnouncedServer;
 
-public class ServerAnnounce {
-	//private static final Logger log = LogManager.getLogger();
-	
-    
-
-			
+public class ServerAnnounce {	
 	public Boolean sendServerAnnounce() {
 		Boolean closeConn = false;
 		try {
+			Control connMan = Control.getInstance();
 			Message msg = new Message();
 			msg.setCommand(Message.SERVER_ANNOUNCE);
-			msg.setId(Settings.ID_SERVER);
+			msg.setId(connMan.getServerId());
 			msg.setHostname(Settings.getLocalHostname());
-			msg.setPort(Settings.getLocalPort());
-			
-			Control connMan = Control.getInstance();
+			msg.setPort(Settings.getLocalPort());	
 			
 			int load = connMan.getNumberClientsConnected();		
 			msg.setLoad(load);
 			
 			String msgStr = msg.toString();
-						
+					
 			connMan.broadcastServers(msgStr, null);	
 		}
 		catch(Exception e) {

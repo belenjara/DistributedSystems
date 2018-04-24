@@ -14,7 +14,7 @@ public class Redirection {
 	
 	public Response redirect() {
 		Control control = Control.getInstance();
-		int clientsNum = control.getNumberClientsConnected();	
+		int clientsNum = control.getNumberClientsConnected() - 1;	
 		List<AnnouncedServer> servers = control.getAnnouncedServers();
 		
 		for(AnnouncedServer s : servers) {

@@ -23,7 +23,6 @@ public class Login {
 		ArrayList<RegisteredClient> registeredClients = Control.getInstance().getRegisteredClients();
 		String storedSecret = findSecret(username,registeredClients);
 
-
 		Message msgCheck = new Message();
 		msgCheck = Message.CheckMessage(msg, Message.COMMAND);
 
@@ -43,17 +42,12 @@ public class Login {
 		}
 
 		if (!username.equals(anonymous)) {
-
-			//if (storedSecret == null) {
-				
-			//}else {
-				msgCheck = new Message();
-				msgCheck = Message.CheckMessage(msg, Message.SECRET);
-				if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
-					response.setMessage(msgCheck.toString());
-					response.setCloseConnection(true);
-					return response;
-				//}
+			msgCheck = new Message();
+			msgCheck = Message.CheckMessage(msg, Message.SECRET);
+			if (msgCheck.getCommand().equals(Message.INVALID_MESSAGE)) {
+				response.setMessage(msgCheck.toString());
+				response.setCloseConnection(true);
+				return response;
 			}
 		}
 

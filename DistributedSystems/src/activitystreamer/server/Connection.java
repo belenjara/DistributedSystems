@@ -38,6 +38,7 @@ public class Connection extends Thread {
 	    this.socket = socket;
 	    open = true;
 	    Auth = false;
+	    
 	    start();
 	}
 	
@@ -72,7 +73,6 @@ public class Connection extends Thread {
 		try {
 			
 			String data;
-			//inStream.ready()
 			while(!term && (data = inreader.readLine())!=null){
 				term=Control.getInstance().process(this,data);	
 			}

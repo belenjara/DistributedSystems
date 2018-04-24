@@ -37,7 +37,7 @@ public class TextFrame extends JFrame implements ActionListener {
 	private JButton sendButton;
 	private JButton disconnectButton;
 	private JSONParser parser = new JSONParser();
-	
+
 	public TextFrame(){
 		setTitle("ActivityStreamer Text I/O");
 		JPanel mainPanel = new JPanel();
@@ -51,11 +51,11 @@ public class TextFrame extends JFrame implements ActionListener {
 		lineBorder = BorderFactory.createTitledBorder(BorderFactory.createLineBorder(Color.lightGray),"JSON output, received from server");
 		outputPanel.setBorder(lineBorder);
 		outputPanel.setName("Text output");
-		
+
 		inputText = new JTextArea();
 		JScrollPane scrollPane = new JScrollPane(inputText);
 		inputPanel.add(scrollPane,BorderLayout.CENTER);
-		
+
 		JPanel buttonGroup = new JPanel();
 		sendButton = new JButton("Send");
 		disconnectButton = new JButton("Disconnect");
@@ -64,16 +64,16 @@ public class TextFrame extends JFrame implements ActionListener {
 		inputPanel.add(buttonGroup,BorderLayout.SOUTH);
 		sendButton.addActionListener(this);
 		disconnectButton.addActionListener(this);
-		
-		
+
+
 		outputText = new JTextArea();
 		scrollPane = new JScrollPane(outputText);
 		outputPanel.add(scrollPane,BorderLayout.CENTER);
-		
+
 		mainPanel.add(inputPanel);
 		mainPanel.add(outputPanel);
 		add(mainPanel);
-		
+
 		setLocationRelativeTo(null); 
 		setSize(1280,768);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -89,23 +89,25 @@ public class TextFrame extends JFrame implements ActionListener {
 		outputText.revalidate();
 		outputText.repaint();
 	}
-	
+
 	@SuppressWarnings("static-access")
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource()==sendButton){
 			String msg = inputText.getText().trim().replaceAll("\r","").replaceAll("\n","").replaceAll("\t", "");
 			ClientSkeleton client  = ClientSkeleton.getInstance();
-			
+
 			JSONObject obj;
 			try {
 				obj = (JSONObject) parser.parse(msg);		
 				client.sendActivityObject(obj);
-				
+
 				if (client.socket != null) {
 					BufferedReader in = new BufferedReader(new InputStreamReader(client.socket.getInputStream(), "UTF-8"));
-					JSONObject output = (JSONObject)parser.parse(in.readLine());
-					this.setOutputText(output);		
+					if (in.ready()) {
+						JSONObject output = (JSONObject)parser.parse(in.readLine());
+						this.setOutputText(output);		
+					}
 				}
 			} catch (ParseException e1) {
 				log.error("invalid JSON object entered into input text field, data not sent");
@@ -116,7 +118,6 @@ public class TextFrame extends JFrame implements ActionListener {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			}		
-			
 		} else if(e.getSource()==disconnectButton){
 			ClientSkeleton.getInstance().disconnect();
 		}

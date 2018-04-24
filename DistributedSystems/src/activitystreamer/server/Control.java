@@ -33,6 +33,7 @@ public class Control extends Thread {
 
 	private static boolean term=false;
 	private static Listener listener;
+	private static String serverId;
 
 	protected static Control control = null;
 
@@ -63,6 +64,8 @@ public class Control extends Thread {
 		//// here or in run method??
 
 		lockInfolist = new ArrayList<LockRequestInfo>();
+		
+		setServerId(Settings.nextSecret());
 
 		initiateConnection();
 
@@ -262,6 +265,7 @@ public class Control extends Thread {
 				//// We don't want to send to the original sender
 				if (!isSender) {
 					//log.info("Msg broadcast to servers : " + msg);
+					System.out.println("I'm going to send a broadcast to only servers: " + msg);
 					sc.writeMsg(msg);
 				}	
 			}
@@ -281,7 +285,8 @@ public class Control extends Thread {
 			if (c.getAuth() && c.isOpen()) {
 				Boolean isSender = (senderConn != null && c.equals(senderConn));
 				//// We don't want to send to the original sender
-				if (!isSender) {		
+				if (!isSender) {
+					System.out.println("I'm going to send a broadcast to all S + C: " + msg);
 					c.writeMsg(msg);
 				}	
 			}
@@ -329,5 +334,13 @@ public class Control extends Thread {
 
 	public void setLockInfolist(LockRequestInfo lockInfo) {
 		lockInfolist.add(lockInfo);
+	}
+
+	public String getServerId() {
+		return serverId;
+	}
+
+	public void setServerId(String serverId) {
+		Control.serverId = serverId;
 	}
 }
