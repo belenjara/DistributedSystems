@@ -157,6 +157,13 @@ public class ClientSkeleton extends Thread {
 							}
 						}
 						
+					/*	try {
+							socket = new Socket(Settings.getRemoteHostname(), Settings.getRemotePort());
+						}
+						catch (Exception e){
+							
+						}*/
+						
 						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
 						output = (JSONObject)parser.parse(in.readLine());				
 						msgStr = output.toJSONString();
