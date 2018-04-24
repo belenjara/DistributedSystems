@@ -162,7 +162,7 @@ public class ClientSkeleton extends Thread {
 						msgStr = output.toJSONString();
 						messageResp = new Message(msgStr);
 
-						log.info("After login => The server response: " + msgStr);
+						log.info("The server response: " + msgStr);
 					}
 
 				} catch (ParseException | IOException e) {
