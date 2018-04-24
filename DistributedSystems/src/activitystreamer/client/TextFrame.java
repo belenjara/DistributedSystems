@@ -89,6 +89,18 @@ public class TextFrame extends JFrame implements ActionListener {
 		outputText.revalidate();
 		outputText.repaint();
 	}
+	
+	public void cleanOutputText(){
+		outputText.setText("");
+		outputText.revalidate();
+		outputText.repaint();
+	}
+	
+	public void cleanInputText(){
+		inputText.setText("");
+		inputText.revalidate();
+		inputText.repaint();
+	}
 
 	@SuppressWarnings("static-access")
 	@Override
@@ -102,22 +114,23 @@ public class TextFrame extends JFrame implements ActionListener {
 				obj = (JSONObject) parser.parse(msg);		
 				client.sendActivityObject(obj);
 
-				if (client.socket != null) {
+			/*	if (client.socket != null) {
 					BufferedReader in = new BufferedReader(new InputStreamReader(client.socket.getInputStream(), "UTF-8"));
 					if (in.ready()) {
 						JSONObject output = (JSONObject)parser.parse(in.readLine());
 						this.setOutputText(output);		
 					}
-				}
+				}*/
 			} catch (ParseException e1) {
 				log.error("invalid JSON object entered into input text field, data not sent");
-			} catch (UnsupportedEncodingException e1) {
+			}
+		/*	} catch (UnsupportedEncodingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
 			} catch (IOException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
-			}		
+			}	*/	
 		} else if(e.getSource()==disconnectButton){
 			ClientSkeleton.getInstance().disconnect();
 		}
