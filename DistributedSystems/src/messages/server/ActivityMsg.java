@@ -84,7 +84,6 @@ public class ActivityMsg {
 				authFailedMsg.setInfo("the supplied secret is incorrect: " + msg.getSecret());
 	
 				return response;
-	
 			}
 		}
 		

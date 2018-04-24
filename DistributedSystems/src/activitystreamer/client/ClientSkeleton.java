@@ -24,7 +24,7 @@ public class ClientSkeleton extends Thread {
 	private TextFrame textFrame;
 	public static Socket socket;
 	private static JSONParser parser = new JSONParser();
-	
+
 	public static ClientSkeleton getInstance(){
 		if(clientSolution==null){
 			clientSolution = new ClientSkeleton();
@@ -44,23 +44,23 @@ public class ClientSkeleton extends Thread {
 		}
 		return clientSolution;
 	}
-	
+
 	public ClientSkeleton(){
-		
+
 		textFrame = new TextFrame();
 		start();
 	}
-	
+
 
 	@SuppressWarnings("unchecked")
 	public void sendActivityObject(JSONObject activityObj){
-		
+
 		String msg = activityObj.toJSONString();
 
 		writeMsg(msg);
 	}
-	
-	
+
+
 	public void disconnect(){
 		try {
 			Message msg = new Message();
@@ -80,76 +80,102 @@ public class ClientSkeleton extends Thread {
 		String username = Settings.getUsername();
 		String secret = Settings.getSecret();
 		Message msg = new Message();
-		
+
 		if (username.equals("anonymous")) {
 			msg.setCommand(Message.LOGIN);
 			msg.setUsername(username);
 			log.info("Sending login as an anonymous: " + msg.toString());
 			writeMsg(msg.toString());
-			
+
 		} else {
 			boolean newSecret = false;
 			if (secret == null || secret.equals("")) {
 				secret = Settings.nextSecret();
 				newSecret = true;
 			}
-			
-			log.info("Sending register message to the server, please wait...");
-			msg.setCommand(Message.REGISTER);
-			msg.setUsername(username);
-			msg.setSecret(secret);
-			writeMsg(msg.toString());
-			
+
 			if (socket != null) {
 				BufferedReader in;
 				try {
+					log.info("Sending login message to the server, please wait...");
+					msg.setCommand(Message.LOGIN);
+					msg.setUsername(username);
+					msg.setSecret(secret);
+					writeMsg(msg.toString());
+
 					in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
 					JSONObject output = (JSONObject)parser.parse(in.readLine());				
 					String msgStr = output.toJSONString();
 					Message messageResp = new Message(msgStr);
-					
-					log.info("After registering => The server response: " + msgStr);
-					
-					if (messageResp.getCommand().equals(Message.REGISTER_SUCCESS)) {
-						log.info("Sending login message to the server, please wait...");
-						msg.setCommand(Message.LOGIN);
-						msg.setUsername(username);
-						msg.setSecret(secret);
-						writeMsg(msg.toString());
-					}
-					
-					in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
-					output = (JSONObject)parser.parse(in.readLine());				
-					msgStr = output.toJSONString();
-					messageResp = new Message(msgStr);
-					
+
 					log.info("After login => The server response: " + msgStr);
-					
+
 					if (messageResp.getCommand().equals(Message.LOGIN_SUCCESS)) {	
 						if (newSecret) {
 							log.info("Secret generated: " + secret);
 						}
-					}			
+					} else if (messageResp.getCommand().equals(Message.LOGIN_FAILED)) {
+						log.info("Sending register message to the server, please wait...");
+						try {
+							socket = new Socket(Settings.getRemoteHostname(), Settings.getRemotePort());
+						}
+						catch (Exception e){
+							
+						}
+						msg = new Message();
+						msg.setCommand(Message.REGISTER);
+						msg.setUsername(username);
+						msg.setSecret(secret);
+						writeMsg(msg.toString());
+
+						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
+						String msgServer = in.readLine();
+						output = (JSONObject)parser.parse(msgServer);				
+						msgStr = output.toJSONString();
+						messageResp = new Message(msgStr);
+
+						log.info("After register => The server response: " + msgStr);
+
+						if (messageResp.getCommand().equals(Message.REGISTER_SUCCESS)) {
+							log.info("Sending login message after registering to the server, please wait...");
+							msg.setCommand(Message.LOGIN);
+							msg.setUsername(username);
+							msg.setSecret(secret);
+							writeMsg(msg.toString());
+
+							in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
+							output = (JSONObject)parser.parse(in.readLine());				
+							msgStr = output.toJSONString();
+							messageResp = new Message(msgStr);
+
+							log.info("After login => The server response: " + msgStr);
+
+							if (messageResp.getCommand().equals(Message.LOGIN_SUCCESS)) {	
+								if (newSecret) {
+									log.info("Secret generated: " + secret);
+								}
+							}
+						}
+					}
+
 				} catch (ParseException | IOException e) {
 					// TODO Auto-generated catch block
 					log.error("An error ocurred.");
 					e.printStackTrace();
 				}
-			}		
-		}		
+			}
+		}
 	}
-	
+
 	private static void writeMsg(String msg){
 		if (socket != null) {
 			log.info("Msg to send to the server: " + msg);
-			
+
 			try {
 				BufferedWriter out = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream(), "UTF-8"));
-				
+
 				out.write(msg + "\n");
 				out.flush();
-				log.info("Message sent");
-				
 			} catch (UnsupportedEncodingException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -162,7 +188,7 @@ public class ClientSkeleton extends Thread {
 			log.error("socket is null...");
 		}
 	}
-	
+
 	public void run(){
 	}
 }

@@ -284,6 +284,7 @@ public class Message {
 		}
 
 		if (jsonMsg.containsKey(ACTIVITY)) {
+			this.activity = new HashMap<String, Object>();
 			JSONObject jsonAct = null;
 			try {
 				jsonAct = (JSONObject)jsonMsg.get(ACTIVITY);
