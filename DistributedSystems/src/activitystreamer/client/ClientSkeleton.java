@@ -156,6 +156,13 @@ public class ClientSkeleton extends Thread {
 								}
 							}
 						}
+						
+						in = new BufferedReader(new InputStreamReader(socket.getInputStream(), "UTF-8"));		
+						output = (JSONObject)parser.parse(in.readLine());				
+						msgStr = output.toJSONString();
+						messageResp = new Message(msgStr);
+
+						log.info("After login => The server response: " + msgStr);
 					}
 
 				} catch (ParseException | IOException e) {
