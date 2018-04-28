@@ -48,7 +48,7 @@ public class Lock {
 			messageResp.setCommand(Message.REGISTER_SUCCESS);
 			messageResp.setInfo(String.format(Message.REGISTER_SUCCESS_INFO, this.username));
 			lockrep.setMessage(messageResp.toString());
-			
+
 			RegisteredClient client = new RegisteredClient();		
 			client.setUsername(this.username);
 			client.setSecret(this.secret);
@@ -82,7 +82,7 @@ public class Lock {
 			response.setMessage(responseMsg.toString());
 			return response;
 		}
-		
+
 		// Then check if the other server is not authenticated.
 		if (!conn.getAuth()) {
 			// server not authenticated
@@ -93,12 +93,13 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
-		
+
 		Control.getInstance().broadcastServers(message.toString(), conn);
-		
+
 		// We get the lock request list and we update it to know of all the server allowed  
 		// the registration of the client.
 		List<LockRequestInfo> lockList = Control.getInstance().getLockInfolist();
+		LockRequestInfo logreq = null;
 		for(LockRequestInfo log : lockList) {
 			if(log.getUsername().equals(this.username)) {
 				int respNum = log.getServerResponses() + 1;
@@ -112,7 +113,9 @@ public class Lock {
 
 					// We respond back to the client REGISTER_SUCCESS
 					log.getClientConnection().writeMsg(messageResp.toString());
-					
+
+					logreq = log;
+
 					RegisteredClient client = new RegisteredClient();		
 					client.setUsername(this.username);
 					client.setSecret(this.secret);
@@ -121,7 +124,11 @@ public class Lock {
 				break;
 			}
 		}
-		
+
+		if (logreq != null && lockList.contains(logreq)) {
+			lockList.remove(logreq);
+		}
+
 		return response;
 	}
 
@@ -162,7 +169,7 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
-		
+
 		Control.getInstance().broadcastServers(message.toString(), conn);
 
 		// We obtain the lock request list.
@@ -182,12 +189,12 @@ public class Lock {
 				break;
 			}
 		}
-	
+
 		// We don't need to keep the lock info anymore..
 		if (logreq != null && lockList.contains(logreq)) {
 			lockList.remove(logreq);
 		}
-		
+
 		// In the PDF says:
 		//When a server receives this message, it will remove the username from its local storage only if the
 		//secret matches the associated secret in its local storage.
@@ -200,14 +207,14 @@ public class Lock {
 				client = c;
 			}
 		}
-		
+
 		if (removeClient && client != null) {
 			registeredClients.remove(client);
 		}
-		
+
 		return response;
 	}
-	
+
 	/**
 	 * When this server receives a lock request from other server.
 	 * We can respond a LOCK_ALLOWED or LOCK_DENIED message.
@@ -245,7 +252,7 @@ public class Lock {
 			response.setCloseConnection(true);
 			return response;
 		}
-		
+
 		Control.getInstance().broadcastServers(message.toString(), conn);
 
 		// We search in our registered clients list if the client exists with the username and secret.
@@ -277,7 +284,7 @@ public class Lock {
 			client.setSecret(this.secret);
 			Control.getInstance().addRegisteredClients(client);
 		}	
-		
+
 		Message messageResp = new Message();
 		messageResp.setCommand(Message.LOCK_ALLOWED);
 		messageResp.setUsername(this.username);
